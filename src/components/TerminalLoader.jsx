@@ -7,7 +7,7 @@ const terminalLines = [
   'rendering projects section',
   'polishing contact links',
   'finalizing responsive layout',
-  'success! launching portfolio now...',
+  'success! ready in 5.9s — starting dev server...',
 ];
 
 const spinnerFrames = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
@@ -18,7 +18,7 @@ function TerminalLoader({ onFinish }) {
   const [spinnerFrame, setSpinnerFrame] = useState(0);
 
   useEffect(() => {
-    const fullText = '> npm install joseph-portfolio';
+    const fullText = '> npm run dev joseph-portfolio';
     let index = 0;
 
     const type = () => {
@@ -27,7 +27,7 @@ function TerminalLoader({ onFinish }) {
         index++;
         setTimeout(type, 35);
       } else {
-        let i = 1;
+        let i = 0;
         const interval = setInterval(() => {
             setCurrentLine(i);
             i++;
@@ -35,7 +35,7 @@ function TerminalLoader({ onFinish }) {
                 clearInterval(interval);
                 setTimeout(onFinish, 1000);
             }
-        }, 800);
+        }, 600);
       }
     };
 
