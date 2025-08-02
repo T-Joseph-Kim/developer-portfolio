@@ -2,6 +2,7 @@ import { useState } from 'react';
 import DotGridBackground from './components/DotGridBackground';
 import CustomCursor from './components/CustomCursor';
 import TerminalLoader from './components/TerminalLoader';
+import Navbar from './components/Navbar';
 
 function App() {
   const [fadeOutTerminal, setFadeOutTerminal] = useState(false);
@@ -18,6 +19,7 @@ function App() {
     <div className="relative min-h-screen bg-black text-white overflow-hidden cursor-none">
       <CustomCursor />
       <DotGridBackground />
+      <Navbar />
 
       {!showMainContent && (
         <div
