@@ -21,7 +21,7 @@ function App() {
 
       {!showMainContent && (
         <div
-          className={`transition-opacity duration-800 ease-in-out ${
+          className={`transition-opacity duration-900 ease-in-out ${
             fadeOutTerminal ? 'opacity-0' : 'opacity-100'
           }`}
         >
@@ -30,7 +30,7 @@ function App() {
       )}
 
       <div
-        className={`relative z-10 flex items-center justify-center h-screen text-4xl font-bold transition-opacity duration-800 ease-in ${
+        className={`relative z-10 flex items-center justify-center h-screen text-4xl font-bold transition-opacity duration-900 ease-in ${
           showMainContent ? 'opacity-100' : 'opacity-0'
         }`}
       >

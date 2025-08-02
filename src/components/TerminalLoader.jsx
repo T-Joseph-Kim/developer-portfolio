@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
 const terminalLines = [
-  'Building About section',
-  'Implementing Education section',
-  'Wiring up Experience section',
-  'Rendering Projects section',
-  'Polishing Contact links',
-  'Finalizing responsive layout',
-  'Success! Launching portfolio now...',
+  'building about section',
+  'implementing education section',
+  'wiring up experience section',
+  'rendering projects section',
+  'polishing contact links',
+  'finalizing responsive layout',
+  'success! launching portfolio now...',
 ];
 
 const spinnerFrames = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
@@ -51,15 +51,21 @@ function TerminalLoader({ onFinish }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-[9999] font-mono text-sm text-green-400">
-      <div className="bg-zinc-900 rounded-lg shadow-lg w-[85%] max-w-2xl h-[40%] border border-zinc-700 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <div className="flex items-center px-3 py-2 bg-zinc-800 border-b border-zinc-700">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <div className="w-3 h-3 bg-yellow-400 rounded-full" />
-            <div className="w-3 h-3 bg-green-500 rounded-full" />
-          </div>
+      <div className="bg-zinc-950 rounded-xl shadow-lg w-[60%] max-w-2xl h-[40%] border border-zinc-700 flex flex-col overflow-hidden">
+        {/* termninal header */}
+        <div className="relative flex items-center px-3 py-2 bg-zinc-900 border-b border-zinc-700 rounded-t-2xl">
+            <div className="flex space-x-2 z-10">
+                <div className="w-2 h-2 bg-red-500 rounded-full" />
+                <div className="w-2 h-2 bg-yellow-400 rounded-full" />
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+            </div>
+
+            <div className="absolute left-1/2 -translate-x-1/2 text-white text-xs flex items-center space-x-2">
+                <span>📁</span>
+                <span>welcome terminal — bash</span>
+            </div>
         </div>
+
 
         {/* Terminal output */}
         <div className="flex-1 px-4 py-3 overflow-y-auto">
