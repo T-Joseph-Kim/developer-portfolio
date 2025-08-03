@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DotGridBackground from './components/DotGridBackground';
 import CustomCursor from './components/CustomCursor';
 import TerminalLoader from './components/TerminalLoader';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavBar';
 
 function App() {
   const [fadeOutTerminal, setFadeOutTerminal] = useState(false);
   const [showMainContent, setShowMainContent] = useState(false);
+
+  useEffect(() => {
+    if (!showMainContent) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup just in case
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showMainContent]);
 
   const handleLoaderFinish = () => {
     setFadeOutTerminal(true);
@@ -16,10 +29,12 @@ function App() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden cursor-none">
+    <div className="relative bg-black text-white cursor-none">
       <CustomCursor />
       <DotGridBackground />
-      <Navbar />
+
+      {/* Only show navbar after terminal finishes */}
+      {showMainContent && <Navbar />}
 
       {!showMainContent && (
         <div
@@ -31,12 +46,31 @@ function App() {
         </div>
       )}
 
+      {/* Main content */}
       <div
-        className={`relative z-10 flex items-center justify-center h-screen text-4xl font-bold transition-opacity duration-900 ease-in ${
+        className={`relative z-10 transition-opacity duration-900 ease-in ${
           showMainContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        🚀 Welcome to My Portfolio
+        <section className="h-screen flex items-center justify-center text-4xl font-bold">
+          🚀 Welcome to My Portfolio
+        </section>
+
+        <section className="h-screen flex items-center justify-center text-3xl">
+          📚 Education Section
+        </section>
+
+        <section className="h-screen flex items-center justify-center text-3xl">
+          💼 Experience Section
+        </section>
+
+        <section className="h-screen flex items-center justify-center text-3xl">
+          🛠️ Projects Section
+        </section>
+
+        <section className="h-screen flex items-center justify-center text-3xl">
+          📫 Contact Section
+        </section>
       </div>
     </div>
   );

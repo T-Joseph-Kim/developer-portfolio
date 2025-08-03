@@ -2,39 +2,67 @@ import { useEffect, useRef } from 'react';
 
 function DotGridBackground() {
   const canvasRef = useRef(null);
+  const dotsRef = useRef([]);
+  const dimensionsRef = useRef({ width: 0, height: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
     const spacing = 17;
     const radius = 1.5;
-
     let mouseX = -1000;
     let mouseY = -1000;
+    let animationFrameId;
+    let lastTimestamp = 0;
 
-    const dots = [];
-    for (let y = 0; y < height; y += spacing) {
-      for (let x = 0; x < width; x += spacing) {
-        dots.push({ x, y, current: 0.2, target: 0.2 });
+    const initCanvas = () => {
+      const width = window.innerWidth;
+      const height = document.body.scrollHeight;
+
+      dimensionsRef.current = { width, height };
+      canvas.width = width;
+      canvas.height = height;
+
+      const dots = [];
+      for (let y = 0; y < height; y += spacing) {
+        for (let x = 0; x < width; x += spacing) {
+          dots.push({ x, y, current: 0.2, target: 0.2 });
+        }
       }
-    }
+      dotsRef.current = dots;
+    };
 
     const lerp = (start, end, factor) => start + (end - start) * factor;
 
-    const draw = () => {
+    const draw = (timestamp) => {
+      // Throttle frame rate to ~60fps
+      if (timestamp - lastTimestamp < 16) {
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+      lastTimestamp = timestamp;
+
+      const { width, height } = dimensionsRef.current;
       ctx.clearRect(0, 0, width, height);
 
-      for (const dot of dots) {
+      const visibleTop = window.scrollY - 300;
+      const visibleBottom = window.scrollY + window.innerHeight + 300;
+
+      for (const dot of dotsRef.current) {
+        if (dot.y < visibleTop || dot.y > visibleBottom) continue;
+
         const dx = mouseX - dot.x;
         const dy = mouseY - dot.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = dx * dx + dy * dy;
 
-        dot.target = Math.max(0.2, 1 - dist / 250);
+        if (dist < 250 * 250) {
+          dot.target = Math.max(0.2, 1 - Math.sqrt(dist) / 250);
+        } else {
+          dot.target = 0.2;
+        }
 
-        dot.current = lerp(dot.current, dot.target, 0.04);
+        dot.current = lerp(dot.current, dot.target, 0.08);
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
@@ -42,12 +70,12 @@ function DotGridBackground() {
         ctx.fill();
       }
 
-      requestAnimationFrame(draw);
+      animationFrameId = requestAnimationFrame(draw);
     };
 
     const handleMouseMove = (e) => {
       mouseX = e.clientX;
-      mouseY = e.clientY;
+      mouseY = e.clientY + window.scrollY;
     };
 
     const handleMouseLeave = () => {
@@ -56,36 +84,32 @@ function DotGridBackground() {
     };
 
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-
-      dots.length = 0;
-      for (let y = 0; y < height; y += spacing) {
-        for (let x = 0; x < width; x += spacing) {
-          dots.push({ x, y, current: 0.2, target: 0.2 });
-        }
-      }
+      initCanvas();
     };
 
+    // Init once
+    initCanvas();
+    animationFrameId = requestAnimationFrame(draw);
+
+    // Event listeners
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
     document.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('blur', handleMouseLeave);
-
-    draw();
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('blur', handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"
+      className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none"
     />
   );
 }

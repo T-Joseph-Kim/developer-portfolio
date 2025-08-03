@@ -50,7 +50,7 @@ function TerminalLoader({ onFinish }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-[9999] font-mono text-sm text-green-400">
+    <div className="fixed inset-0 flex items-center justify-center z-50 font-mono text-sm text-green-400">
       <div className="bg-zinc-950 rounded-xl shadow-lg w-[60%] max-w-2xl h-[40%] border border-zinc-700 flex flex-col overflow-hidden">
         {/* termninal header */}
         <div className="relative flex items-center px-3 py-2 bg-zinc-900 border-b border-zinc-700 rounded-t-2xl">
