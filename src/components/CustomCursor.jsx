@@ -3,75 +3,75 @@ import { useEffect } from 'react';
 function CustomCursor() {
   useEffect(() => {
     const outerCircle = document.querySelector('.cursor');
-    const innerDot = document.querySelector('.cursor-dot');
-    const hoverTargets = document.querySelectorAll('a, .project, .misc-item');
+    const cursorDot = document.querySelector('.cursor-dot');
 
-    if (!outerCircle || !innerDot) return;
+    if (!outerCircle || !cursorDot) return;
 
-    // Position and interpolation variables
+    outerCircle.dataset.scale = 'scale(1)';
+    outerCircle.style.transition = 'transform 0.2s ease-out';
+
     let mouseX = 0, mouseY = 0;
-    let outerX = 0, outerY = 0;
-    let innerX = 0, innerY = 0;
-
-    // Cache cursor dimensions
-    const outerOffset = 10;
-    const innerOffset = 2;
-
-    // Animation loop
-    let rafId;
-    const animateCursor = () => {
-      outerX += (mouseX - outerX) * 0.12;
-      outerY += (mouseY - outerY) * 0.12;
-
-      innerX += (mouseX - innerX);
-      innerY += (mouseY - innerY);
-
-      outerCircle.style.transform = `translate3d(${outerX - outerOffset}px, ${outerY - outerOffset}px, 0)`;
-      innerDot.style.transform = `translate3d(${innerX - innerOffset}px, ${innerY - innerOffset}px, 0)`;
-
-      rafId = requestAnimationFrame(animateCursor);
-    };
+    let cursorX = 0, cursorY = 0;
+    let dotX = 0, dotY = 0;
 
     // Mouse tracking
     const handleMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
-
     document.addEventListener('mousemove', handleMouseMove);
-    animateCursor();
 
-    // Hover effect
-    const handleMouseEnter = () => {
-      outerCircle.style.transform += ' scale(1.5)';
-      outerCircle.style.borderColor = '#999';
+    // Animation loop
+    const animate = () => {
+      cursorX += (mouseX - cursorX) * 0.18;
+      cursorY += (mouseY - cursorY) * 0.18;
+
+      dotX += (mouseX - dotX);
+      dotY += (mouseY - dotY);
+
+      // Use transform instead of left/top for better performance and compatibility with scale
+      outerCircle.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px) ${outerCircle.dataset.scale || 'scale(1)'}`;
+      cursorDot.style.transform = `translate(${dotX - 2}px, ${dotY - 2}px)`;
+
+      requestAnimationFrame(animate);
     };
 
-    const handleMouseLeave = () => {
-      outerCircle.style.transform = outerCircle.style.transform.replace(' scale(1.5)', '');
-      outerCircle.style.borderColor = '';
+    animate();
+
+    // Use event delegation for better reliability
+    const handleMouseEnter = (e) => {
+      // Check if the target matches our hover selectors
+      if (e.target.matches('a, button, .project, .misc-item') || 
+          e.target.closest('a, button, .project, .misc-item')) {
+        outerCircle.dataset.scale = 'scale(1.5)';
+      }
     };
 
-    hoverTargets.forEach((el) => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
+    const handleMouseLeave = (e) => {
+      // Check if we're leaving a hoverable element
+      if (e.target.matches('a, button, .project, .misc-item') || 
+          e.target.closest('a, button, .project, .misc-item')) {
+        outerCircle.dataset.scale = 'scale(1)';
+        outerCircle.style.borderColor = '';
+      }
+    };
+
+    // Use event delegation on document
+    document.addEventListener('mouseover', handleMouseEnter);
+    document.addEventListener('mouseout', handleMouseLeave);
 
     // Cleanup
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(rafId);
-      hoverTargets.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
+      document.removeEventListener('mouseover', handleMouseEnter);
+      document.removeEventListener('mouseout', handleMouseLeave);
     };
   }, []);
 
   return (
     <>
-      <div className="cursor fixed w-5 h-5 rounded-full border border-white z-100 pointer-events-none mix-blend-difference" />
-      <div className="cursor-dot fixed w-1 h-1 rounded-full bg-white z-100 pointer-events-none mix-blend-difference" />
+      <div className="cursor fixed w-5 h-5 rounded-full border border-white z-[100] pointer-events-none mix-blend-difference" style={{ left: 0, top: 0 }} />
+      <div className="cursor-dot fixed w-1 h-1 rounded-full bg-white z-[100] pointer-events-none mix-blend-difference" style={{ left: 0, top: 0 }} />
     </>
   );
 }
