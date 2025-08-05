@@ -29,7 +29,7 @@ function App() {
   };
 
   return (
-    <div className="relative bg-black text-white cursor-none">
+    <div className="relative bg-gray-900 text-white">
       <CustomCursor />
       <DotGridBackground />
 
@@ -52,23 +52,27 @@ function App() {
           showMainContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <section className="h-screen flex items-center justify-center text-4xl font-bold">
+        <section id="home" className="h-screen flex items-center justify-center text-4xl font-bold">
           🚀 Welcome to My Portfolio
         </section>
 
-        <section className="h-screen flex items-center justify-center text-3xl">
+        <section id="education" className="h-screen flex items-center justify-center text-3xl">
           📚 Education Section
         </section>
 
-        <section className="h-screen flex items-center justify-center text-3xl">
+        <section id="experience" className="h-screen flex items-center justify-center text-3xl">
           💼 Experience Section
         </section>
 
-        <section className="h-screen flex items-center justify-center text-3xl">
+        <section id="projects" className="h-screen flex items-center justify-center text-3xl">
           🛠️ Projects Section
         </section>
 
-        <section className="h-screen flex items-center justify-center text-3xl">
+        <section id="skills" className="h-screen flex items-center justify-center text-3xl">
+          🎯 Skills Section
+        </section>
+
+        <section id="contact" className="h-screen flex items-center justify-center text-3xl">
           📫 Contact Section
         </section>
       </div>

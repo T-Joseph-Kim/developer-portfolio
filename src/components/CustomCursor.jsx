@@ -8,7 +8,7 @@ function CustomCursor() {
     if (!outerCircle || !cursorDot) return;
 
     outerCircle.dataset.scale = 'scale(1)';
-    outerCircle.style.transition = 'transform 0.2s ease-out';
+    outerCircle.style.transition = 'transform 0.1s ease-out';
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
@@ -21,19 +21,30 @@ function CustomCursor() {
     };
     document.addEventListener('mousemove', handleMouseMove);
 
-    // Animation loop
+    let prevOuterTransform = '';
+    let prevInnerTransform = '';
+
     const animate = () => {
-      cursorX += (mouseX - cursorX) * 0.18;
-      cursorY += (mouseY - cursorY) * 0.18;
+        cursorX += (mouseX - cursorX) * 0.3;
+        cursorY += (mouseY - cursorY) * 0.3;
 
-      dotX += (mouseX - dotX);
-      dotY += (mouseY - dotY);
+        dotX += (mouseX - dotX);
+        dotY += (mouseY - dotY);
 
-      // Use transform instead of left/top for better performance and compatibility with scale
-      outerCircle.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px) ${outerCircle.dataset.scale || 'scale(1)'}`;
-      cursorDot.style.transform = `translate(${dotX - 2}px, ${dotY - 2}px)`;
+        const outerTransform = `translate(${cursorX - 10}px, ${cursorY - 10}px) ${outerCircle.dataset.scale || 'scale(1)'}`;
+        const innerTransform = `translate(${dotX - 2}px, ${dotY - 2}px)`;
 
-      requestAnimationFrame(animate);
+        if (outerTransform !== prevOuterTransform) {
+            outerCircle.style.transform = outerTransform;
+            prevOuterTransform = outerTransform;
+        }
+
+        if (innerTransform !== prevInnerTransform) {
+            cursorDot.style.transform = innerTransform;
+            prevInnerTransform = innerTransform;
+        }
+
+        requestAnimationFrame(animate);
     };
 
     animate();

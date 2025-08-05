@@ -15,45 +15,88 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleTheme = () => setDarkMode(!darkMode);
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
 
-  const navContent = (
-    <div className="max-w-5xl mx-auto flex items-center justify-between px-6 py-2 transition-all duration-500 font-[Inter] text-white">
-      {/* Left: Home */}
-      <button className="flex items-center space-x-2">
-        <FaHome className="text-lg" />
-      </button>
-
-      {/* Center: Nav Links */}
-      <div className="hidden md:flex space-x-6 text-sm tracking-wide">
-        <button className="hover:text-gray-300 transition">Experience</button>
-        <button className="hover:text-gray-300 transition">Projects</button>
-        <button className="hover:text-gray-300 transition">Skills</button>
-        <button className="hover:text-gray-300 transition">Contact</button>
-      </div>
-
-      {/* Right: Dark/Light Toggle */}
-      <button onClick={toggleTheme} className="text-lg">
-        {darkMode ? <FaSun /> : <FaMoon />}
-      </button>
-    </div>
-  );
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50">
-      {scrolled ? (
+    <nav 
+      className="sticky top-0 z-50 transition-all duration-500 ease-out px-4"
+      style={{
+        paddingTop: scrolled ? '1.25rem' : '2.5rem'
+      }}
+    >
+      <div 
+        className={`mx-auto transition-all duration-500 ease-out ${
+          scrolled ? 'w-[90%]' : 'w-[60%]'
+        }`}
+      >
         <LiquidGlass
-          blur={0.4}
-          borderRadius={0}
-          saturation={1.2}
-          brightness={1.1}
-          contrast={1.05}
+          blurAmount={10}
+          elasticity={0.35}
+          cornerRadius={100}
+          className="rounded-2xl border border-white/20"
         >
-          {navContent}
+          <div className="flex items-center justify-between px-6 py-4">
+            {/* Left - Home Icon */}
+            <button
+              onClick={() => scrollToSection('home')}
+              className="p-2 rounded-xl hover:bg-white/10 transition-all duration-300 group"
+              aria-label="Home"
+            >
+              <FaHome className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors duration-300" />
+            </button>
+
+            {/* Center - Navigation Links */}
+            <div className="flex items-center space-x-6">
+              <button
+                onClick={() => scrollToSection('experience')}
+                className="px-4 py-2 rounded-xl text-white hover:text-blue-400 hover:bg-white/10 transition-all duration-300 font-medium"
+              >
+                Experience
+              </button>
+              <button
+                onClick={() => scrollToSection('projects')}
+                className="px-4 py-2 rounded-xl text-white hover:text-blue-400 hover:bg-white/10 transition-all duration-300 font-medium"
+              >
+                Projects
+              </button>
+              <button
+                onClick={() => scrollToSection('skills')}
+                className="px-4 py-2 rounded-xl text-white hover:text-blue-400 hover:bg-white/10 transition-all duration-300 font-medium"
+              >
+                Skills
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="px-4 py-2 rounded-xl text-white hover:text-blue-400 hover:bg-white/10 transition-all duration-300 font-medium"
+              >
+                Contact
+              </button>
+            </div>
+
+            {/* Right - Dark/Light Mode Toggle */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-xl hover:bg-white/10 transition-all duration-300 group"
+              aria-label="Toggle theme"
+            >
+              {darkMode ? (
+                <FaSun className="w-5 h-5 text-white group-hover:text-yellow-400 transition-colors duration-300" />
+              ) : (
+                <FaMoon className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors duration-300" />
+              )}
+            </button>
+          </div>
         </LiquidGlass>
-      ) : (
-        navContent
-      )}
+      </div>
     </nav>
   );
 }
