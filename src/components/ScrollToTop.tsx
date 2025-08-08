@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronUp } from 'react-icons/fa';
 
-function ScrollToTop() {
-  const [isVisible, setIsVisible] = useState(false);
+function ScrollToTop(): React.JSX.Element {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
+    const toggleVisibility = (): void => {
       // Show button when user scrolls down 300px
       if (window.scrollY > 300) {
         setIsVisible(true);
@@ -18,7 +18,7 @@ function ScrollToTop() {
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  const scrollToTop = () => {
+  const scrollToTop = (): void => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'

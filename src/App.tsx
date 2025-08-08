@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import DotGridBackground from './components/DotGridBackground';
 import CustomCursor from './components/CustomCursor';
 import TerminalLoader from './components/TerminalLoader';
@@ -6,9 +6,9 @@ import Navbar from './components/NavBar';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import ScrollToTop from './components/ScrollToTop';
 
-function App() {
-  const [fadeOutTerminal, setFadeOutTerminal] = useState(false);
-  const [showMainContent, setShowMainContent] = useState(false);
+function App(): React.JSX.Element {
+  const [fadeOutTerminal, setFadeOutTerminal] = useState<boolean>(false);
+  const [showMainContent, setShowMainContent] = useState<boolean>(false);
 
   useEffect(() => {
     if (!showMainContent) {
@@ -23,7 +23,7 @@ function App() {
     };
   }, [showMainContent]);
 
-  const handleLoaderFinish = () => {
+  const handleLoaderFinish = (): void => {
     setFadeOutTerminal(true);
     setTimeout(() => {
       setShowMainContent(true);

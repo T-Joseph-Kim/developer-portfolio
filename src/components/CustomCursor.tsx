@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-function CustomCursor() {
+function CustomCursor(): React.JSX.Element {
   useEffect(() => {
-    const outerCircle = document.querySelector('.cursor');
-    const cursorDot = document.querySelector('.cursor-dot');
+    const outerCircle = document.querySelector('.cursor') as HTMLElement;
+    const cursorDot = document.querySelector('.cursor-dot') as HTMLElement;
 
     if (!outerCircle || !cursorDot) return;
 
@@ -15,7 +15,7 @@ function CustomCursor() {
     let dotX = 0, dotY = 0;
 
     // Mouse tracking
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent): void => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
@@ -50,18 +50,20 @@ function CustomCursor() {
     animate();
 
     // Use event delegation for better reliability
-    const handleMouseEnter = (e) => {
+    const handleMouseEnter = (e: Event): void => {
+      const target = e.target as HTMLElement;
       // Check if the target matches our hover selectors
-      if (e.target.matches('a, button, .project, .misc-item') || 
-          e.target.closest('a, button, .project, .misc-item')) {
+      if (target.matches('a, button, .project, .misc-item') || 
+          target.closest('a, button, .project, .misc-item')) {
         outerCircle.dataset.scale = 'scale(1.5)';
       }
     };
 
-    const handleMouseLeave = (e) => {
+    const handleMouseLeave = (e: Event): void => {
+      const target = e.target as HTMLElement;
       // Check if we're leaving a hoverable element
-      if (e.target.matches('a, button, .project, .misc-item') || 
-          e.target.closest('a, button, .project, .misc-item')) {
+      if (target.matches('a, button, .project, .misc-item') || 
+          target.closest('a, button, .project, .misc-item')) {
         outerCircle.dataset.scale = 'scale(1)';
         outerCircle.style.borderColor = '';
       }

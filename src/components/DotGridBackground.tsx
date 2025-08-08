@@ -1,19 +1,34 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-function DotGridBackground() {
-  const canvasRef = useRef(null);
-  const dotsRef = useRef([]);
-  const dimensionsRef = useRef({ width: 0, height: 0 });
+interface Dot {
+  x: number;
+  y: number;
+  current: number;
+  target: number;
+}
+
+interface Dimensions {
+  width: number;
+  height: number;
+}
+
+function DotGridBackground(): React.JSX.Element {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dotsRef = useRef<Dot[]>([]);
+  const dimensionsRef = useRef<Dimensions>({ width: 0, height: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
+    
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
     const spacing = 17;
     const radius = 1.5;
     let mouseX = -1000;
     let mouseY = -1000;
-    let animationFrameId;
+    let animationFrameId: number;
     let lastTimestamp = 0;
 
     const initCanvas = () => {
@@ -33,9 +48,9 @@ function DotGridBackground() {
       dotsRef.current = dots;
     };
 
-    const lerp = (start, end, factor) => start + (end - start) * factor;
+    const lerp = (start: number, end: number, factor: number): number => start + (end - start) * factor;
 
-    const draw = (timestamp) => {
+    const draw = (timestamp: number): void => {
       // Throttle frame rate to ~60fps
       if (timestamp - lastTimestamp < 16) {
         animationFrameId = requestAnimationFrame(draw);
@@ -73,7 +88,7 @@ function DotGridBackground() {
       animationFrameId = requestAnimationFrame(draw);
     };
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent): void => {
       mouseX = e.clientX;
       mouseY = e.clientY + window.scrollY;
     };

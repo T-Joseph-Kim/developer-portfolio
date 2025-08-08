@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const terminalLines = [
+const terminalLines: string[] = [
   'building about section',
   'implementing education section',
   'wiring up experience section',
@@ -10,12 +10,16 @@ const terminalLines = [
   'success! ready in 5.9s — starting dev server...',
 ];
 
-const spinnerFrames = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+const spinnerFrames: string[] = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
 
-function TerminalLoader({ onFinish }) {
-  const [typedText, setTypedText] = useState('');
-  const [currentLine, setCurrentLine] = useState(-1);
-  const [spinnerFrame, setSpinnerFrame] = useState(0);
+interface TerminalLoaderProps {
+  onFinish: () => void;
+}
+
+function TerminalLoader({ onFinish }: TerminalLoaderProps): React.JSX.Element {
+  const [typedText, setTypedText] = useState<string>('');
+  const [currentLine, setCurrentLine] = useState<number>(-1);
+  const [spinnerFrame, setSpinnerFrame] = useState<number>(0);
 
   useEffect(() => {
     const fullText = '> npm run dev joseph-portfolio';

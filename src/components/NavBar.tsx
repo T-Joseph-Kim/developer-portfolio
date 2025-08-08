@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
-import { FaHome, FaSun, FaMoon } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { FaSun, FaMoon, FaLinkedin, FaGithub } from 'react-icons/fa';
+import TJKLogo from '../assets/TJK_WT.png';
 
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+function Navbar(): React.JSX.Element {
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState<boolean>(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,11 +15,11 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const toggleDarkMode = () => {
+  const toggleDarkMode = (): void => {
     setDarkMode(!darkMode);
   };
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string): void => {
     if (sectionId === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
@@ -50,13 +51,17 @@ function Navbar() {
           <div className={`flex items-center justify-between w-full transition-all duration-400 ${
             scrolled ? 'px-8 py-5' : 'px-6 py-4'
           }`}>
-            {/* Left - Home Icon */}
+            {/* Left - Logo */}
             <button
               onClick={() => scrollToSection('home')}
               className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-400 group flex-shrink-0"
               aria-label="Home"
             >
-              <FaHome className="w-5 h-5 text-white duration-300" />
+              <img 
+                src={TJKLogo} 
+                alt="TJK Logo" 
+                className="w-10 h-10 object-contain transition-all duration-300 group-hover:brightness-110"
+              />
             </button>
 
             {/* Center - Navigation Links */}
@@ -89,18 +94,43 @@ function Navbar() {
               </button>
             </div>
 
-            {/* Right - Dark/Light Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
-              aria-label="Toggle theme"
-            >
-              {darkMode ? (
-                <FaSun className="w-5 h-5 text-white group-hover:text-yellow-400 transition-colors duration-400" />
-              ) : (
-                <FaMoon className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors duration-400" />
-              )}
-            </button>
+            {/* Right - Social Links & Dark/Light Mode Toggle */}
+            <div className="flex items-center space-x-2">
+              {/* LinkedIn Button */}
+              <a
+                href="https://linkedin.com/in/taebok-joseph-kim/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedin className="w-5 h-5 text-white group-hover:text-blue-500 transition-colors duration-300" />
+              </a>
+
+              {/* GitHub Button */}
+              <a
+                href="https://github.com/T-Joseph-Kim"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                aria-label="GitHub"
+              >
+                <FaGithub className="w-5 h-5 text-white group-hover:text-gray-300 transition-colors duration-300" />
+              </a>
+
+              {/* Dark/Light Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                aria-label="Toggle theme"
+              >
+                {darkMode ? (
+                  <FaSun className="w-5 h-5 text-white group-hover:text-yellow-400 transition-colors duration-400" />
+                ) : (
+                  <FaMoon className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors duration-400" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

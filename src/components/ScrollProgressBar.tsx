@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function ScrollProgressBar() {
-  const [scrollProgress, setScrollProgress] = useState(0);
+function ScrollProgressBar(): React.JSX.Element {
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
 
   useEffect(() => {
-    const updateScrollProgress = () => {
+    const updateScrollProgress = (): void => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
