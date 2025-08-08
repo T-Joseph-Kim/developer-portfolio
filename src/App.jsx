@@ -3,6 +3,8 @@ import DotGridBackground from './components/DotGridBackground';
 import CustomCursor from './components/CustomCursor';
 import TerminalLoader from './components/TerminalLoader';
 import Navbar from './components/NavBar';
+import ScrollProgressBar from './components/ScrollProgressBar';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [fadeOutTerminal, setFadeOutTerminal] = useState(false);
@@ -29,12 +31,18 @@ function App() {
   };
 
   return (
-    <div className="relative bg-gray-900 text-white">
+    <div className="relative bg-black text-white">
       <CustomCursor />
       <DotGridBackground />
 
+      {/* Scroll Progress Bar - only show after terminal finishes */}
+      {showMainContent && <ScrollProgressBar />}
+
       {/* Only show navbar after terminal finishes */}
       {showMainContent && <Navbar />}
+
+      {/* Scroll to top button - only show after terminal finishes */}
+      {showMainContent && <ScrollToTop />}
 
       {!showMainContent && (
         <div
