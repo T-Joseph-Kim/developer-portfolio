@@ -25,13 +25,13 @@ function ScrollProgressBar(): React.JSX.Element {
         className={`h-full transition-all duration-150 ease-out shadow-lg ${
           isDarkMode 
             ? 'bg-gradient-to-r from-white/60 via-white to-white/60' 
-            : 'bg-gradient-to-r from-blue-500/80 via-blue-600 to-blue-500/80'
+            : 'bg-gradient-to-r from-black/60 via-black to-black/60'
         }`}
         style={{
           width: `${scrollProgress}%`,
           boxShadow: isDarkMode 
             ? '0 0 10px rgba(255, 255, 255, 0.3)'
-            : '0 0 10px rgba(59, 130, 246, 0.4)'
+            : '0 0 10px rgba(0, 0, 0, 0.4)'
         }}
       />
     </div>

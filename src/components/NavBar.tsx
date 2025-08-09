@@ -1,19 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { FaSun, FaMoon, FaLinkedin, FaGithub } from 'react-icons/fa';
+import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import { DarkModeSwitch } from 'react-toggle-dark-mode';
 import TJKLogoWhite from '../assets/TJK_WT.png';
 import TJKLogoBlack from '../assets/TJK_BLK.png';
 import { useTheme } from '../contexts/ThemeContext';
 
 function Navbar(): React.JSX.Element {
   const [scrolled, setScrolled] = useState<boolean>(false);
+  const [activeSection, setActiveSection] = useState<string>('home');
   const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 0);
+      
+      // Determine active section based on scroll position
+      const sections = ['home', 'experience', 'projects', 'skills', 'contact'];
+      const scrollPosition = window.scrollY + 200; // Offset for better detection
+      
+      let currentSection = 'home';
+      
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top + window.scrollY;
+          
+          if (scrollPosition >= elementTop) {
+            currentSection = sectionId;
+          }
+        }
+      }
+      
+      setActiveSection(currentSection);
     };
 
     window.addEventListener('scroll', handleScroll);
+    
+    // Set initial active section
+    handleScroll();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -77,9 +103,13 @@ function Navbar(): React.JSX.Element {
               <button
                 onClick={() => scrollToSection('experience')}
                 className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  activeSection === 'experience' 
+                    ? (isDarkMode ? 'bg-white/20 scale-105 translate-y-1' : 'bg-black/20 scale-105 translate-y-1')
+                    : (isDarkMode ? 'hover:bg-white/20' : 'hover:bg-black/20')
+                } ${
                   isDarkMode 
-                    ? 'text-white hover:bg-white/20' 
-                    : 'text-gray-900 hover:bg-black/20'
+                    ? 'text-white' 
+                    : 'text-gray-900'
                 }`}
               >
                 Experience
@@ -87,9 +117,13 @@ function Navbar(): React.JSX.Element {
               <button
                 onClick={() => scrollToSection('projects')}
                 className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  activeSection === 'projects' 
+                    ? (isDarkMode ? 'bg-white/20 scale-105 translate-y-1' : 'bg-black/20 scale-105 translate-y-1')
+                    : (isDarkMode ? 'hover:bg-white/20' : 'hover:bg-black/20')
+                } ${
                   isDarkMode 
-                    ? 'text-white hover:bg-white/20' 
-                    : 'text-gray-900 hover:bg-black/20'
+                    ? 'text-white' 
+                    : 'text-gray-900'
                 }`}
               >
                 Projects
@@ -97,9 +131,13 @@ function Navbar(): React.JSX.Element {
               <button
                 onClick={() => scrollToSection('skills')}
                 className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  activeSection === 'skills' 
+                    ? (isDarkMode ? 'bg-white/20 scale-105 translate-y-1' : 'bg-black/20 scale-105 translate-y-1')
+                    : (isDarkMode ? 'hover:bg-white/20' : 'hover:bg-black/20')
+                } ${
                   isDarkMode 
-                    ? 'text-white hover:bg-white/20' 
-                    : 'text-gray-900 hover:bg-black/20'
+                    ? 'text-white' 
+                    : 'text-gray-900'
                 }`}
               >
                 Skills
@@ -107,9 +145,13 @@ function Navbar(): React.JSX.Element {
               <button
                 onClick={() => scrollToSection('contact')}
                 className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  activeSection === 'contact' 
+                    ? (isDarkMode ? 'bg-white/20 scale-105 translate-y-1' : 'bg-black/20 scale-105 translate-y-1')
+                    : (isDarkMode ? 'hover:bg-white/20' : 'hover:bg-black/20')
+                } ${
                   isDarkMode 
-                    ? 'text-white hover:bg-white/20' 
-                    : 'text-gray-900 hover:bg-black/20'
+                    ? 'text-white' 
+                    : 'text-gray-900'
                 }`}
               >
                 Contact
@@ -155,21 +197,19 @@ function Navbar(): React.JSX.Element {
               </a>
 
               {/* Dark/Light Mode Toggle */}
-              <button
-                onClick={toggleTheme}
-                className={`p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-300 group flex-shrink-0 ${
-                  isDarkMode 
-                    ? 'hover:bg-white/10' 
-                    : 'hover:bg-black/10'
-                }`}
-                aria-label="Toggle theme"
-              >
-                {isDarkMode ? (
-                  <FaSun className="w-5 h-5 text-white group-hover:text-yellow-400 transition-colors duration-400" />
-                ) : (
-                  <FaMoon className="w-5 h-5 text-gray-900 group-hover:text-blue-400 transition-colors duration-400" />
-                )}
-              </button>
+              <div className="dark-mode-switch-container p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-300 group flex-shrink-0">
+                <DarkModeSwitch
+                  checked={isDarkMode}
+                  onChange={(checked: boolean) => {
+                    if (checked !== isDarkMode) {
+                      toggleTheme();
+                    }
+                  }}
+                  size={20}
+                  sunColor="#000000"
+                  moonColor="#ffffff"
+                />
+              </div>
             </div>
           </div>
         </div>

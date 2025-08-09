@@ -43,6 +43,6 @@
   animation: fadeSlide 0.4s ease-out forwards;
 }
 
-html, body, button, a, input, textarea, select {
+html, body, button, a, input, textarea, select, svg, [data-testid="dark-mode-switch"], [data-testid="dark-mode-switch"] * {
   cursor: none !important;
 }

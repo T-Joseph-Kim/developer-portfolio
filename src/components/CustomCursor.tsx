@@ -54,9 +54,16 @@ function CustomCursor(): React.JSX.Element {
     // Use event delegation for better reliability
     const handleMouseEnter = (e: Event): void => {
       const target = e.target as HTMLElement;
-      // Check if the target matches our hover selectors
+      // Check if the target or any ancestor matches our hover selectors
+      const buttonParent = target.closest('button');
+      const isDarkModeSwitch = target.closest('.dark-mode-switch-container') || 
+                              target.closest('[data-testid="dark-mode-switch"]') ||
+                              target.matches('svg[class*="dark"], svg[class*="mode"], svg[class*="switch"]') ||
+                              (buttonParent && buttonParent.querySelector('svg'));
+      
       if (target.matches('a, button, .project, .misc-item') || 
-          target.closest('a, button, .project, .misc-item')) {
+          target.closest('a, button, .project, .misc-item') ||
+          isDarkModeSwitch) {
         outerCircle.dataset.scale = 'scale(1.5)';
       }
     };
@@ -64,8 +71,15 @@ function CustomCursor(): React.JSX.Element {
     const handleMouseLeave = (e: Event): void => {
       const target = e.target as HTMLElement;
       // Check if we're leaving a hoverable element
+      const buttonParent = target.closest('button');
+      const isDarkModeSwitch = target.closest('.dark-mode-switch-container') || 
+                              target.closest('[data-testid="dark-mode-switch"]') ||
+                              target.matches('svg[class*="dark"], svg[class*="mode"], svg[class*="switch"]') ||
+                              (buttonParent && buttonParent.querySelector('svg'));
+      
       if (target.matches('a, button, .project, .misc-item') || 
-          target.closest('a, button, .project, .misc-item')) {
+          target.closest('a, button, .project, .misc-item') ||
+          isDarkModeSwitch) {
         outerCircle.dataset.scale = 'scale(1)';
         outerCircle.style.borderColor = '';
       }
