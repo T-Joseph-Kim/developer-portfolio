@@ -5,10 +5,12 @@ import TerminalLoader from './components/TerminalLoader';
 import Navbar from './components/NavBar';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import ScrollToTop from './components/ScrollToTop';
+import { useTheme } from './contexts/ThemeContext';
 
 function App(): React.JSX.Element {
   const [fadeOutTerminal, setFadeOutTerminal] = useState<boolean>(false);
   const [showMainContent, setShowMainContent] = useState<boolean>(false);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     if (!showMainContent) {
@@ -31,7 +33,11 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <div className="relative bg-black text-white">
+    <div className={`relative transition-colors duration-500 ${
+      isDarkMode 
+        ? 'bg-black text-white' 
+        : 'bg-white text-gray-900'
+    }`}>
       <CustomCursor />
       <DotGridBackground />
 

@@ -1,6 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Theme CSS Variables */
+:root {
+  --primary-color: rgb(59, 130, 246);
+  --accent-color: rgb(0, 150, 255);
+}
+
+.dark {
+  --bg-primary: rgb(0, 0, 0);
+  --text-primary: rgb(255, 255, 255);
+  --text-secondary: rgb(156, 163, 175);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+}
+
+.light {
+  --bg-primary: rgb(255, 255, 255);
+  --text-primary: rgb(17, 24, 39);
+  --text-secondary: rgb(107, 114, 128);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(0, 0, 0, 0.1);
+}
+
 @keyframes fadeSlide {
   from {
     opacity: 0;

@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function CustomCursor(): React.JSX.Element {
+  const { isDarkMode } = useTheme();
   useEffect(() => {
     const outerCircle = document.querySelector('.cursor') as HTMLElement;
     const cursorDot = document.querySelector('.cursor-dot') as HTMLElement;
@@ -83,8 +85,18 @@ function CustomCursor(): React.JSX.Element {
 
   return (
     <>
-      <div className="cursor fixed w-5 h-5 rounded-full border border-white z-[100] pointer-events-none mix-blend-difference" style={{ left: 0, top: 0 }} />
-      <div className="cursor-dot fixed w-1 h-1 rounded-full bg-white z-[100] pointer-events-none mix-blend-difference" style={{ left: 0, top: 0 }} />
+      <div 
+        className={`cursor fixed w-5 h-5 rounded-full border z-[100] pointer-events-none transition-colors duration-300 ${
+          isDarkMode ? 'border-white' : 'border-gray-900'
+        }`} 
+        style={{ left: 0, top: 0 }} 
+      />
+      <div 
+        className={`cursor-dot fixed w-1 h-1 rounded-full z-[100] pointer-events-none transition-colors duration-300 ${
+          isDarkMode ? 'bg-white' : 'bg-gray-900'
+        }`} 
+        style={{ left: 0, top: 0 }} 
+      />
     </>
   );
 }

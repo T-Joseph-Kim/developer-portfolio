@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FaSun, FaMoon, FaLinkedin, FaGithub } from 'react-icons/fa';
-import TJKLogo from '../assets/TJK_WT.png';
+import TJKLogoWhite from '../assets/TJK_WT.png';
+import TJKLogoBlack from '../assets/TJK_BLK.png';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Navbar(): React.JSX.Element {
   const [scrolled, setScrolled] = useState<boolean>(false);
-  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,10 +16,6 @@ function Navbar(): React.JSX.Element {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const toggleDarkMode = (): void => {
-    setDarkMode(!darkMode);
-  };
 
   const scrollToSection = (sectionId: string): void => {
     if (sectionId === 'home') {
@@ -45,7 +43,11 @@ function Navbar(): React.JSX.Element {
       >
         <div className={`rounded-2xl transition-all duration-300 ${
           scrolled 
-            ? 'backdrop-blur-sm bg-white/10 shadow-lg' 
+            ? `backdrop-blur-sm shadow-lg ${
+                isDarkMode 
+                  ? 'bg-white/10' 
+                  : 'bg-black/10'
+              }` 
             : 'bg-transparent'
         }`}>
           <div className={`flex items-center justify-between w-full transition-all duration-400 ${
@@ -54,11 +56,15 @@ function Navbar(): React.JSX.Element {
             {/* Left - Logo */}
             <button
               onClick={() => scrollToSection('home')}
-              className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-400 group flex-shrink-0"
+              className={`p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-400 group flex-shrink-0 ${
+                isDarkMode 
+                  ? 'hover:bg-white/10' 
+                  : 'hover:bg-black/10'
+              }`}
               aria-label="Home"
             >
               <img 
-                src={TJKLogo} 
+                src={isDarkMode ? TJKLogoWhite : TJKLogoBlack}
                 alt="TJK Logo" 
                 className="w-10 h-10 object-contain transition-all duration-300 group-hover:brightness-110"
               />
@@ -70,25 +76,41 @@ function Navbar(): React.JSX.Element {
             }`}>
               <button
                 onClick={() => scrollToSection('experience')}
-                className="px-4 py-2 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-300 font-medium text-lg"
+                className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  isDarkMode 
+                    ? 'text-white hover:bg-white/20' 
+                    : 'text-gray-900 hover:bg-black/20'
+                }`}
               >
                 Experience
               </button>
               <button
                 onClick={() => scrollToSection('projects')}
-                className="px-4 py-2 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-300 font-medium text-lg"
+                className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  isDarkMode 
+                    ? 'text-white hover:bg-white/20' 
+                    : 'text-gray-900 hover:bg-black/20'
+                }`}
               >
                 Projects
               </button>
               <button
                 onClick={() => scrollToSection('skills')}
-                className="px-4 py-2 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-300 font-medium text-lg"
+                className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  isDarkMode 
+                    ? 'text-white hover:bg-white/20' 
+                    : 'text-gray-900 hover:bg-black/20'
+                }`}
               >
                 Skills
               </button>
               <button
                 onClick={() => scrollToSection('contact')}
-                className="px-4 py-2 rounded-xl text-white hover:bg-white/20 hover:scale-105 transition-all duration-300 font-medium text-lg"
+                className={`px-4 py-2 rounded-xl hover:scale-105 hover:translate-y-1 transition-all duration-300 font-medium text-lg ${
+                  isDarkMode 
+                    ? 'text-white hover:bg-white/20' 
+                    : 'text-gray-900 hover:bg-black/20'
+                }`}
               >
                 Contact
               </button>
@@ -101,10 +123,16 @@ function Navbar(): React.JSX.Element {
                 href="https://linkedin.com/in/taebok-joseph-kim/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                className={`p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-300 group flex-shrink-0 ${
+                  isDarkMode 
+                    ? 'hover:bg-white/10' 
+                    : 'hover:bg-black/10'
+                }`}
                 aria-label="LinkedIn"
               >
-                <FaLinkedin className="w-5 h-5 text-white group-hover:text-blue-500 transition-colors duration-300" />
+                <FaLinkedin className={`w-5 h-5 group-hover:text-blue-500 transition-colors duration-300 ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`} />
               </a>
 
               {/* GitHub Button */}
@@ -112,22 +140,34 @@ function Navbar(): React.JSX.Element {
                 href="https://github.com/T-Joseph-Kim"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                className={`p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-300 group flex-shrink-0 ${
+                  isDarkMode 
+                    ? 'hover:bg-white/10' 
+                    : 'hover:bg-black/10'
+                }`}
                 aria-label="GitHub"
               >
-                <FaGithub className="w-5 h-5 text-white group-hover:text-gray-300 transition-colors duration-300" />
+                <FaGithub className={`w-5 h-5 transition-colors duration-300 ${
+                  isDarkMode 
+                    ? 'text-white group-hover:text-gray-300' 
+                    : 'text-gray-900 group-hover:text-gray-600'
+                }`} />
               </a>
 
               {/* Dark/Light Mode Toggle */}
               <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-xl hover:bg-white/10 hover:scale-110 transition-all duration-300 group flex-shrink-0"
+                onClick={toggleTheme}
+                className={`p-2 rounded-xl hover:scale-110 hover:translate-y-1 transition-all duration-300 group flex-shrink-0 ${
+                  isDarkMode 
+                    ? 'hover:bg-white/10' 
+                    : 'hover:bg-black/10'
+                }`}
                 aria-label="Toggle theme"
               >
-                {darkMode ? (
+                {isDarkMode ? (
                   <FaSun className="w-5 h-5 text-white group-hover:text-yellow-400 transition-colors duration-400" />
                 ) : (
-                  <FaMoon className="w-5 h-5 text-white group-hover:text-blue-400 transition-colors duration-400" />
+                  <FaMoon className="w-5 h-5 text-gray-900 group-hover:text-blue-400 transition-colors duration-400" />
                 )}
               </button>
             </div>

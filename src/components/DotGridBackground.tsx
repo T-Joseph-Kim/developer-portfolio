@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface Dot {
   x: number;
@@ -16,6 +17,7 @@ function DotGridBackground(): React.JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dotsRef = useRef<Dot[]>([]);
   const dimensionsRef = useRef<Dimensions>({ width: 0, height: 0 });
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,11 +79,17 @@ function DotGridBackground(): React.JSX.Element {
           dot.target = 0.2;
         }
 
-        dot.current = lerp(dot.current, dot.target, 0.08);
+        dot.current = lerp(dot.current, dot.target, 0.15);
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 150, 255, ${dot.current * 0.6})`;
+        
+        // Dynamic color based on theme
+        const color = isDarkMode 
+          ? `rgba(0, 150, 255, ${dot.current * 0.9})` // Blue for dark mode
+          : `rgba(59, 130, 246, ${dot.current * 0.8})`; // Slightly different blue for light mode
+        
+        ctx.fillStyle = color;
         ctx.fill();
       }
 
@@ -119,7 +127,7 @@ function DotGridBackground(): React.JSX.Element {
       window.removeEventListener('blur', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [isDarkMode]); // Add isDarkMode as dependency to re-initialize when theme changes
 
   return (
     <canvas

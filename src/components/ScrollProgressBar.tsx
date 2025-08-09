@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function ScrollProgressBar(): React.JSX.Element {
   const [scrollProgress, setScrollProgress] = useState<number>(0);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
     const updateScrollProgress = (): void => {
@@ -20,10 +22,16 @@ function ScrollProgressBar(): React.JSX.Element {
   return (
     <div className="fixed top-0 left-0 w-full h-0.5 bg-transparent z-[100]">
       <div
-        className="h-full bg-gradient-to-r from-white/60 via-white to-white/60 transition-all duration-150 ease-out shadow-lg"
+        className={`h-full transition-all duration-150 ease-out shadow-lg ${
+          isDarkMode 
+            ? 'bg-gradient-to-r from-white/60 via-white to-white/60' 
+            : 'bg-gradient-to-r from-blue-500/80 via-blue-600 to-blue-500/80'
+        }`}
         style={{
           width: `${scrollProgress}%`,
-          boxShadow: '0 0 10px rgba(255, 255, 255, 0.3)'
+          boxShadow: isDarkMode 
+            ? '0 0 10px rgba(255, 255, 255, 0.3)'
+            : '0 0 10px rgba(59, 130, 246, 0.4)'
         }}
       />
     </div>
