@@ -172,7 +172,7 @@ function Navbar(): React.JSX.Element {
                 }`}
                 aria-label="LinkedIn"
               >
-                <FaLinkedin className={`w-5 h-5 group-hover:text-blue-500 transition-colors duration-300 ${
+                <FaLinkedin className={`w-5 h-5 transition-colors duration-300 ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`} />
               </a>
