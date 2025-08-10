@@ -5,6 +5,8 @@ import TerminalLoader from './components/TerminalLoader';
 import Navbar from './components/NavBar';
 import ScrollProgressBar from './components/ScrollProgressBar';
 import ScrollToTop from './components/ScrollToTop';
+import ProfileCard from './components/ProfileCard';
+import About from './components/About';
 import { useTheme } from './contexts/ThemeContext';
 
 function App(): React.JSX.Element {
@@ -66,8 +68,18 @@ function App(): React.JSX.Element {
           showMainContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <section id="home" className="h-screen flex items-center justify-center text-4xl font-bold">
-          🚀 Welcome to My Portfolio
+        <section id="home" className="min-h-screen flex items-center justify-center px-8 -mt-34">
+          <div className="flex items-center justify-center gap-14 max-w-7xl w-full">
+            {/* About component - left side */}
+            <div className="flex-shrink-0">
+              <About />
+            </div>
+            
+            {/* ProfileCard - right side */}
+            <div className="flex-shrink-0">
+              <ProfileCard />
+            </div>
+          </div>
         </section>
 
         <section id="education" className="h-screen flex items-center justify-center text-3xl">

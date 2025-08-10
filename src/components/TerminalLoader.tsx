@@ -3,12 +3,10 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const terminalLines: string[] = [
   'building about section',
-  'implementing education section',
   'wiring up experience section',
   'rendering projects section',
   'polishing contact links',
-  'finalizing responsive layout',
-  'success! ready in 5.9s — starting dev server...',
+  'success! ready in 5.16s — starting dev server...',
 ];
 
 const spinnerFrames: string[] = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
