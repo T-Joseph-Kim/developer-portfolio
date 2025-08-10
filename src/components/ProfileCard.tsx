@@ -8,7 +8,7 @@ interface ProfileCardProps {
 }
 
 export default function ProfileCard({
-  photoUrl = "/src/assets/headshot.png",
+  photoUrl = "/headshot.png",
   enableGyro = true,
 }: ProfileCardProps): React.JSX.Element {
   const { isDarkMode } = useTheme();
