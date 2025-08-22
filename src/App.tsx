@@ -70,23 +70,19 @@ function App(): React.JSX.Element {
       >
         <section
           id="home"
-          className="min-h-screen flex items-center justify-center px-4 sm:px-8 -mt-34"
+          className="min-h-[calc(100vh-9rem)] flex items-center justify-center"
         >
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-7xl w-full">
             {/* About component - left side */}
-            <div className="flex-shrink-0 w-full md:w-auto">
+            <div className="flex flex-col items-center md:items-start w-full md:w-auto">
               <About />
             </div>
 
             {/* ProfileCard - right side */}
-            <div className="flex-shrink-0 w-full md:w-auto mt-8 md:mt-0">
+            <div className="flex flex-col items-center md:items-start w-full md:w-auto mt-8 md:mt-0">
               <ProfileCard />
             </div>
           </div>
-        </section>
-
-        <section id="education" className="h-screen flex items-center justify-center text-3xl">
-          📚 Education Section
         </section>
 
         <section id="experience" className="h-screen flex items-center justify-center text-3xl">

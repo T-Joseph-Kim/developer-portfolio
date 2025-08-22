@@ -62,7 +62,13 @@ export default function ProfileCard({
   );
 
   return (
-    <div className="relative isolate w-full max-w-sm perspective-1000">
+    <div
+      className="relative isolate perspective-1000"
+      style={{
+        // Width scales with screen, keeps min & max for readability
+        width: "clamp(12rem, 80vw, 27rem)",
+      }}
+    >
       {/* Floating background accents */}
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
@@ -123,9 +129,13 @@ export default function ProfileCard({
 
           {/* Photo container */}
           <div
-            className={`relative h-[28rem] w-full overflow-hidden rounded-2xl ring-1 ${
+            className={`relative w-full overflow-hidden rounded-2xl ring-1 ${
               isDarkMode ? "ring-white/10" : "ring-black/10"
             }`}
+            style={{
+              // Maintains consistent aspect ratio as card scales
+              aspectRatio: "4 / 5",
+            }}
           >
             <img
               src={photoUrl}
