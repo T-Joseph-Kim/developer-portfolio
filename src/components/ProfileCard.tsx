@@ -4,30 +4,32 @@ import { useTheme } from "../contexts/ThemeContext";
 
 interface ProfileCardProps {
   photoUrl?: string;
-  enableGyro?: boolean;
 }
 
 export default function ProfileCard({
   photoUrl = "/headshot.png",
-  enableGyro = true,
 }: ProfileCardProps): React.JSX.Element {
   const { isDarkMode } = useTheme();
   const cardRef = useRef<HTMLDivElement>(null);
+  const rafId = useRef<number | null>(null);
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.5 });
 
-  // ===== Tilt helpers
+  // ===== Tilt helpers with RAF throttle
   const updateTiltFromEvent = (clientX: number, clientY: number): void => {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const px = (clientX - rect.left) / rect.width;
-    const py = (clientY - rect.top) / rect.height;
-    const max = 10; // deg
-    const ry = (px - 0.5) * (max * 2);
-    const rx = (0.5 - py) * (max * 2);
-    setTilt({ rx, ry });
-    setPointer({ x: px, y: py });
+    cancelAnimationFrame(rafId.current!);
+    rafId.current = requestAnimationFrame(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const px = (clientX - rect.left) / rect.width;
+      const py = (clientY - rect.top) / rect.height;
+      const max = 10; // deg
+      const ry = (px - 0.5) * (max * 2);
+      const rx = (0.5 - py) * (max * 2);
+      setTilt({ rx, ry });
+      setPointer({ x: px, y: py });
+    });
   };
 
   const resetTilt = (): void => setTilt({ rx: 0, ry: 0 });
@@ -51,42 +53,13 @@ export default function ProfileCard({
     };
   }, []);
 
-  useEffect(() => {
-    if (!enableGyro) return;
-    let granted = false;
-
-    const handle = (e: DeviceOrientationEvent): void => {
-      if (!cardRef.current) return;
-      const max = 10;
-      const ry = (e.gamma || 0) / 90 * max;
-      const rx = (-(e.beta || 0) + 45) / 90 * max;
-      setTilt({ rx, ry });
-    };
-
-    const setup = (): void => {
-      if (typeof DeviceOrientationEvent !== "undefined" && 'requestPermission' in DeviceOrientationEvent) {
-        (DeviceOrientationEvent as any).requestPermission().then((res: string) => {
-          if (res === "granted") {
-            window.addEventListener("deviceorientation", handle);
-            granted = true;
-          }
-        }).catch(() => {});
-      } else {
-        window.addEventListener("deviceorientation", handle);
-        granted = true;
-      }
-    };
-
-    setup();
-    return () => {
-      if (granted) window.removeEventListener("deviceorientation", handle);
-    };
-  }, [enableGyro]);
-
-  const cssVars = useMemo(() => ({
-    "--mx": `${(pointer.x * 100).toFixed(2)}%`,
-    "--my": `${(pointer.y * 100).toFixed(2)}%`,
-  }), [pointer]);
+  const cssVars = useMemo(
+    () => ({
+      "--mx": `${(pointer.x * 100).toFixed(2)}%`,
+      "--my": `${(pointer.y * 100).toFixed(2)}%`,
+    }),
+    [pointer]
+  );
 
   return (
     <div className="relative isolate w-full max-w-sm perspective-1000">
@@ -96,8 +69,8 @@ export default function ProfileCard({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`absolute -inset-8 -z-10 rounded-[2rem] blur-2xl ${
-          isDarkMode 
-            ? "bg-gradient-to-br from-indigo-500/20 via-fuchsia-500/10 to-sky-400/20" 
+          isDarkMode
+            ? "bg-gradient-to-br from-indigo-500/20 via-fuchsia-500/10 to-sky-400/20"
             : "bg-gradient-to-br from-indigo-400/30 via-fuchsia-400/20 to-sky-300/30"
         }`}
       />
@@ -108,12 +81,13 @@ export default function ProfileCard({
           transformStyle: "preserve-3d",
           transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
           ...cssVars,
+          willChange: "transform",
         }}
         onMouseMove={(e) => updateTiltFromEvent(e.clientX, e.clientY)}
         onMouseLeave={resetTilt}
         className={`group relative rounded-3xl p-1 ring-1 backdrop-blur-xl transition-transform duration-150 ${
-          isDarkMode 
-            ? "bg-white/5 ring-white/10" 
+          isDarkMode
+            ? "bg-white/5 ring-white/10"
             : "bg-black/5 ring-black/10"
         }`}
       >
@@ -136,32 +110,38 @@ export default function ProfileCard({
           }}
         />
 
-        {/* Card content*/}
-        <div className={`relative rounded-[1.4rem] p-4 ${
-          isDarkMode 
-            ? "bg-gradient-to-b from-slate-900/80 to-slate-900/60" 
-            : "bg-gradient-to-b from-gray-200/85 to-gray-300/75"
-        }`}>
+        {/* Card content */}
+        <div
+          className={`relative rounded-[1.4rem] p-4 ${
+            isDarkMode
+              ? "bg-gradient-to-b from-slate-900/80 to-slate-900/60"
+              : "bg-gradient-to-b from-gray-200/85 to-gray-300/75"
+          }`}
+        >
           {/* Shooting stars overlay */}
           <Stars isDarkMode={isDarkMode} />
 
           {/* Photo container */}
-          <div className={`relative h-[28rem] w-full overflow-hidden rounded-2xl ring-1 ${
-            isDarkMode ? "ring-white/10" : "ring-black/10"
-          }`}>
+          <div
+            className={`relative h-[28rem] w-full overflow-hidden rounded-2xl ring-1 ${
+              isDarkMode ? "ring-white/10" : "ring-black/10"
+            }`}
+          >
             <img
               src={photoUrl}
               alt="Profile headshot"
               className="h-full w-full object-cover"
               loading="eager"
               decoding="async"
-              style={{ transform: "translateZ(40px)" }}
+              style={{ transform: "translateZ(40px)", willChange: "transform" }}
             />
-            <div className={`pointer-events-none absolute inset-0 ${
-              isDarkMode 
-                ? "bg-gradient-to-tr from-indigo-500/30 via-transparent to-fuchsia-400/20" 
-                : "bg-gradient-to-tr from-indigo-400/20 via-transparent to-fuchsia-300/15"
-            }`} />
+            <div
+              className={`pointer-events-none absolute inset-0 ${
+                isDarkMode
+                  ? "bg-gradient-to-tr from-indigo-500/30 via-transparent to-fuchsia-400/20"
+                  : "bg-gradient-to-tr from-indigo-400/20 via-transparent to-fuchsia-300/15"
+              }`}
+            />
           </div>
         </div>
       </motion.div>
@@ -181,26 +161,28 @@ export default function ProfileCard({
 }
 
 function Stars({ isDarkMode }: { isDarkMode: boolean }): React.JSX.Element {
-  const streaks = useMemo(() => (
-    Array.from({ length: 6 }).map((_, i) => ({
-      id: i,
-      top: Math.random() * 100,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-      duration: 4 + Math.random() * 3,
-      blur: 0.5 + Math.random() * 1.2,
-      scale: 0.8 + Math.random() * 1.2,
-    }))
-  ), []);
+  const streaks = useMemo(
+    () =>
+      Array.from({ length: 6 }).map((_, i) => ({
+        id: i,
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        delay: Math.random() * 5,
+        duration: 4 + Math.random() * 3,
+        blur: 0.5 + Math.random() * 1.2,
+        scale: 0.8 + Math.random() * 1.2,
+      })),
+    []
+  );
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[1.4rem]">
-      {streaks.map(s => (
+      {streaks.map((s) => (
         <div
           key={s.id}
           className={`absolute h-px w-40 ${
-            isDarkMode 
-              ? "bg-gradient-to-r from-transparent via-white to-transparent" 
+            isDarkMode
+              ? "bg-gradient-to-r from-transparent via-white to-transparent"
               : "bg-gradient-to-r from-transparent via-gray-400 to-transparent"
           }`}
           style={{

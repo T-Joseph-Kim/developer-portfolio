@@ -68,15 +68,18 @@ function App(): React.JSX.Element {
           showMainContent ? 'opacity-100' : 'opacity-0'
         }`}
       >
-        <section id="home" className="min-h-screen flex items-center justify-center px-8 -mt-34">
-          <div className="flex items-center justify-center gap-14 max-w-7xl w-full">
+        <section
+          id="home"
+          className="min-h-screen flex items-center justify-center px-4 sm:px-8 -mt-34"
+        >
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-7xl w-full">
             {/* About component - left side */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 w-full md:w-auto">
               <About />
             </div>
-            
+
             {/* ProfileCard - right side */}
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 w-full md:w-auto mt-8 md:mt-0">
               <ProfileCard />
             </div>
           </div>
