@@ -70,7 +70,7 @@ function App(): React.JSX.Element {
       >
         <section
           id="home"
-          className="min-h-[calc(100vh-9rem)] flex items-center justify-center"
+          className="min-h-[calc(100vh-8rem)] flex items-center justify-center"
         >
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-7xl w-full">
             {/* About component - left side */}

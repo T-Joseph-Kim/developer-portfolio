@@ -61,10 +61,16 @@ function CustomCursor(): React.JSX.Element {
                               target.matches('svg[class*="dark"], svg[class*="mode"], svg[class*="switch"]') ||
                               (buttonParent && buttonParent.querySelector('svg'));
       
-      if (target.matches('a, button, .project, .misc-item') || 
-          target.closest('a, button, .project, .misc-item') ||
-          isDarkModeSwitch) {
+      // Specific detection for name and other hoverable elements
+      const isHoverableElement = target.matches('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3') || 
+                                target.closest('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3');
+      
+      if (isHoverableElement || isDarkModeSwitch) {
         outerCircle.dataset.scale = 'scale(1.5)';
+        // Override cursor style
+        if (target.style) {
+          target.style.cursor = 'none';
+        }
       }
     };
 
@@ -77,9 +83,11 @@ function CustomCursor(): React.JSX.Element {
                               target.matches('svg[class*="dark"], svg[class*="mode"], svg[class*="switch"]') ||
                               (buttonParent && buttonParent.querySelector('svg'));
       
-      if (target.matches('a, button, .project, .misc-item') || 
-          target.closest('a, button, .project, .misc-item') ||
-          isDarkModeSwitch) {
+      // Specific detection for name and other hoverable elements
+      const isHoverableElement = target.matches('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3') || 
+                                target.closest('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3');
+      
+      if (isHoverableElement || isDarkModeSwitch) {
         outerCircle.dataset.scale = 'scale(1)';
         outerCircle.style.borderColor = '';
       }
