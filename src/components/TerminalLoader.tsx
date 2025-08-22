@@ -33,12 +33,12 @@ function TerminalLoader({ onFinish }: TerminalLoaderProps): React.JSX.Element {
       } else {
         let i = 0;
         const interval = setInterval(() => {
-            setCurrentLine(i);
-            i++;
-            if (i === terminalLines.length) {
-                clearInterval(interval);
-                setTimeout(onFinish, 1000);
-            }
+          setCurrentLine(i);
+          i++;
+          if (i === terminalLines.length) {
+            clearInterval(interval);
+            setTimeout(onFinish, 1000);
+          }
         }, 600);
       }
     };
@@ -54,35 +54,39 @@ function TerminalLoader({ onFinish }: TerminalLoaderProps): React.JSX.Element {
   }, []);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 font-mono text-sm">
-      <div className={`rounded-xl shadow-lg w-[60%] max-w-2xl h-[40%] border flex flex-col overflow-hidden ${
-        isDarkMode 
-          ? 'bg-zinc-950 border-zinc-700' 
-          : 'bg-white border-gray-300'
-      }`}>
+    <div className="fixed inset-0 flex items-center justify-center z-50 font-mono text-xs sm:text-sm md:text-base">
+      <div
+        className={`rounded-xl shadow-lg border flex flex-col overflow-hidden
+          w-[80%] h-[30%]       /* mobile */
+          sm:w-[80%] sm:h-[40%] /* tablet */
+          md:w-[55%] md:h-[50%] md:max-w-xl /* desktop */
+          ${isDarkMode ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-300'}
+        `}
+      >
         {/* terminal header */}
-        <div className={`relative flex items-center px-3 py-2 border-b rounded-t-2xl ${
-          isDarkMode 
-            ? 'bg-zinc-900 border-zinc-700' 
-            : 'bg-gray-100 border-gray-300'
-        }`}>
-            <div className="flex space-x-2 z-10">
-                <div className="w-2 h-2 bg-red-500 rounded-full" />
-                <div className="w-2 h-2 bg-yellow-400 rounded-full" />
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-            </div>
+        <div
+          className={`relative flex items-center px-3 py-2 border-b rounded-t-2xl
+            ${isDarkMode ? 'bg-zinc-900 border-zinc-700' : 'bg-gray-100 border-gray-300'}
+          `}
+        >
+          <div className="flex space-x-2 z-10">
+            <div className="w-2 h-2 bg-red-500 rounded-full" />
+            <div className="w-2 h-2 bg-yellow-400 rounded-full" />
+            <div className="w-2 h-2 bg-green-500 rounded-full" />
+          </div>
 
-            <div className={`absolute left-1/2 -translate-x-1/2 text-xs flex items-center space-x-2 ${
-              isDarkMode ? 'text-white' : 'text-gray-900'
-            }`}>
-                <span>📁</span>
-                <span>welcome terminal — bash</span>
-            </div>
+          <div
+            className={`absolute left-1/2 -translate-x-1/2 text-[10px] sm:text-xs flex items-center space-x-2
+              ${isDarkMode ? 'text-white' : 'text-gray-900'}
+            `}
+          >
+            <span>📁</span>
+            <span>welcome terminal — bash</span>
+          </div>
         </div>
 
-
         {/* Terminal output */}
-        <div className="flex-1 px-4 py-3 overflow-y-auto">
+        <div className="flex-1 px-3 sm:px-4 py-2 sm:py-3 overflow-y-auto">
           <div className={isDarkMode ? 'text-white' : 'text-gray-900'}>{typedText}</div>
 
           {terminalLines.map((line, index) => {
@@ -103,9 +107,10 @@ function TerminalLoader({ onFinish }: TerminalLoaderProps): React.JSX.Element {
               );
             } else if (index === currentLine) {
               return (
-                <div key={index} className={`flex items-center ${
-                  isDarkMode ? 'text-green-400' : 'text-green-600'
-                }`}>
+                <div
+                  key={index}
+                  className={`flex items-center ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}
+                >
                   <span className="w-4 inline-block">{spinnerFrames[spinnerFrame]}</span>{' '}
                   <span>{line}</span>
                 </div>
