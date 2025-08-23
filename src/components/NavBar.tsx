@@ -9,12 +9,15 @@ function Navbar(): React.JSX.Element {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
-  const [dragY, setDragY] = useState(0);
+
   const startY = useRef(0);
   const dragging = useRef(false);
+  const dragYRef = useRef(0);
+  const pointerIdRef = useRef<number | null>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
   const { isDarkMode, toggleTheme } = useTheme();
 
-  // Better scroll lock with resize handling
+  // Keep Tailwind entry/exit animation; prevent body scroll on mobile when open
   useEffect(() => {
     const updateScrollLock = () => {
       if (menuOpen && window.innerWidth < 768) {
@@ -23,7 +26,6 @@ function Navbar(): React.JSX.Element {
         document.body.style.overflow = '';
       }
     };
-
     updateScrollLock();
     window.addEventListener('resize', updateScrollLock);
     return () => {
@@ -32,27 +34,31 @@ function Navbar(): React.JSX.Element {
     };
   }, [menuOpen]);
 
+  // Throttled scroll handler (rAF)
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 0);
 
-      const sections = ['home', 'experience', 'projects', 'skills', 'contact'];
-      const scrollPosition = window.scrollY + 200;
-      let currentSection = 'home';
+          const sections = ['home', 'experience', 'projects', 'skills', 'contact'];
+          const scrollPosition = window.scrollY + 200;
+          let currentSection = 'home';
 
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const elementTop = rect.top + window.scrollY;
-          if (scrollPosition >= elementTop) {
-            currentSection = sectionId;
+          for (const sectionId of sections) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+              const elementTop = element.offsetTop;
+              if (scrollPosition >= elementTop) currentSection = sectionId;
+            }
           }
-        }
+          setActiveSection(currentSection);
+          ticking = false;
+        });
+        ticking = true;
       }
-      setActiveSection(currentSection);
     };
-
     window.addEventListener('scroll', handleScroll);
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
@@ -63,29 +69,87 @@ function Navbar(): React.JSX.Element {
     if (sectionId === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-      const element = document.getElementById(sectionId);
-      if (element) element.scrollIntoView({ behavior: 'smooth' });
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // --- Drag Handlers (Touch + Mouse) ---
+  // --- Drag logic (fluid while dragging, smooth on release) ---
   const startDrag = (y: number) => {
     startY.current = y;
     dragging.current = true;
+    dragYRef.current = 0;
+    // Disable animation during drag for fluid tracking
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = 'none';
+    }
   };
 
   const moveDrag = (y: number) => {
-    if (!dragging.current) return;
-    const delta = y - startY.current;
-    if (delta > 0) setDragY(delta); // only drag downward
+    if (!dragging.current || !sheetRef.current) return;
+    const delta = Math.max(0, y - startY.current);
+    dragYRef.current = delta;
+    sheetRef.current.style.transform = `translateY(${delta}px)`;
   };
 
   const endDrag = () => {
-    if (dragY > 100) {
-      setMenuOpen(false); // close if pulled far enough
+    if (!sheetRef.current) return;
+
+    const shouldClose = dragYRef.current > 100;
+
+    if (shouldClose) {
+      // Clear inline styles so Tailwind classes can animate close
+      sheetRef.current.style.transition = '';
+      sheetRef.current.style.transform = '';
+      setMenuOpen(false); // triggers Tailwind translate-y-full + transition
+    } else {
+      // Snap back smoothly using inline transition, then clear it
+      sheetRef.current.style.transition = 'transform 0.6s ease-in-out';
+      sheetRef.current.style.transform = 'translateY(0px)';
+      const node = sheetRef.current;
+      const onEnd = () => {
+        if (!node) return;
+        node.style.transition = '';
+        node.style.transform = '';
+        node.removeEventListener('transitionend', onEnd);
+      };
+      node.addEventListener('transitionend', onEnd);
     }
-    setDragY(0);
+
+    dragYRef.current = 0;
     dragging.current = false;
+  };
+
+  // Ensure no leftover inline transform/transition when menuOpen toggles
+  useEffect(() => {
+    if (sheetRef.current) {
+      sheetRef.current.style.transition = '';
+      sheetRef.current.style.transform = '';
+    }
+  }, [menuOpen]);
+
+  // Pointer events: robust for mouse + touch with capture
+  const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
+    // Only allow drag when open and pointer starts near top of sheet or anywhere (your choice)
+    if (!menuOpen) return;
+    pointerIdRef.current = e.pointerId;
+    sheetRef.current?.setPointerCapture(e.pointerId);
+    startDrag(e.clientY);
+  };
+
+  const onPointerMove: React.PointerEventHandler<HTMLDivElement> = (e) => {
+    if (pointerIdRef.current === null) return;
+    moveDrag(e.clientY);
+  };
+
+  const onPointerUp: React.PointerEventHandler<HTMLDivElement> = () => {
+    if (pointerIdRef.current !== null) {
+      try {
+        sheetRef.current?.releasePointerCapture(pointerIdRef.current);
+      } catch {}
+      pointerIdRef.current = null;
+    }
+    endDrag();
   };
 
   return (
@@ -169,7 +233,7 @@ function Navbar(): React.JSX.Element {
                   <FaGithub className={`w-5 h-5 ${isDarkMode ? 'text-white' : 'text-gray-900'}`} />
                 </a>
 
-                <div className="p-2 rounded-xl transition-all duration-300">
+                <div className="p-2 rounded-xl transition-all duration-300 transform hover:scale-105 hover:translate-y-1">
                   <DarkModeSwitch
                     checked={isDarkMode}
                     onChange={toggleTheme}
@@ -194,19 +258,15 @@ function Navbar(): React.JSX.Element {
 
       {/* Full-Screen Bottom Sheet */}
       <div
-        className={`fixed inset-0 z-50 md:hidden transition-transform duration-600 ease-in-out ${
+        ref={sheetRef}
+        className={`fixed inset-0 z-50 md:hidden transition-transform duration-400 ease-in-out ${
           menuOpen ? 'translate-y-0' : 'translate-y-full'
         }`}
-        style={{ transform: `translateY(${dragY}px)` }}
-        // Touch events
-        onTouchStart={(e) => startDrag(e.touches[0].clientY)}
-        onTouchMove={(e) => moveDrag(e.touches[0].clientY)}
-        onTouchEnd={endDrag}
-        // Mouse events (desktop)
-        onMouseDown={(e) => startDrag(e.clientY)}
-        onMouseMove={(e) => moveDrag(e.clientY)}
-        onMouseUp={endDrag}
-        onMouseLeave={endDrag}
+        style={{ touchAction: 'none', willChange: 'transform' }} // fluid drag, GPU hint
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
       >
         <div
           className={`w-full h-full flex flex-col rounded-t-2xl backdrop-blur-lg ${
