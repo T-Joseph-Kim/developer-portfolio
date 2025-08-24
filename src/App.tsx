@@ -7,6 +7,7 @@ import ScrollProgressBar from './components/ScrollProgressBar';
 import ScrollToTop from './components/ScrollToTop';
 import ProfileCard from './components/ProfileCard';
 import About from './components/About';
+import ScrollArrow from './components/ScrollArrow';
 import { useTheme } from './contexts/ThemeContext';
 
 function App(): React.JSX.Element {
@@ -51,6 +52,8 @@ function App(): React.JSX.Element {
 
       {/* Scroll to top button - only show after terminal finishes */}
       {showMainContent && <ScrollToTop />}
+
+      {showMainContent && <ScrollArrow />}
 
       {!showMainContent && (
         <div

@@ -74,7 +74,7 @@ const About: React.FC = () => {
           cursor: 'none'
         }}
       >
-        Joseph Kim
+        T. Joseph Kim
       </motion.h1>
 
       {/* Static education line */}

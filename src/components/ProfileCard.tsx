@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
 
@@ -6,44 +6,117 @@ interface ProfileCardProps {
   photoUrl?: string;
 }
 
+const clamp = (v: number, min = 0, max = 1) => Math.min(Math.max(v, min), max);
+const round = (v: number, p = 3) => parseFloat(v.toFixed(p));
+const adjust = (v: number, a: number, b: number, c: number, d: number) =>
+  round(c + ((d - c) * (v - a)) / (b - a));
+const easeInOutCubic = (x: number) =>
+  x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+const ANIMATION_CONFIG = {
+  SMOOTH_DURATION: 600,
+  INITIAL_DURATION: 1500,
+  INITIAL_X_OFFSET: 70,
+  INITIAL_Y_OFFSET: 60,
+} as const;
+
 export default function ProfileCard({
   photoUrl = "/headshot.png",
 }: ProfileCardProps): React.JSX.Element {
   const { isDarkMode } = useTheme();
+  const wrapRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number | null>(null);
+
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.5 });
 
-  // ===== Tilt helpers with RAF throttle
-  const updateTiltFromEvent = (clientX: number, clientY: number): void => {
-    cancelAnimationFrame(rafId.current!);
-    rafId.current = requestAnimationFrame(() => {
-      const el = cardRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const px = (clientX - rect.left) / rect.width;
-      const py = (clientY - rect.top) / rect.height;
-      const max = 10; // deg
-      const ry = (px - 0.5) * (max * 2);
-      const rx = (0.5 - py) * (max * 2);
+  const updateCardTransform = useCallback(
+    (offsetX: number, offsetY: number, el: HTMLElement) => {
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+
+      const px = clamp(offsetX / width, 0, 1);
+      const py = clamp(offsetY / height, 0, 1);
+
+      const cx = px - 0.5;
+      const cy = py - 0.5;
+
+      const max = 10; // max degrees
+      const ry = round(cx * (max * 2));
+      const rx = round(-cy * (max * 2));
+
       setTilt({ rx, ry });
       setPointer({ x: px, y: py });
-    });
+    },
+    []
+  );
+
+  const createSmoothAnimation = useCallback(
+    (duration: number, startX: number, startY: number, el: HTMLElement) => {
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+      const startTime = performance.now();
+      const targetX = el.clientWidth / 2;
+      const targetY = el.clientHeight / 2;
+
+      const loop = (t: number) => {
+        const progress = clamp((t - startTime) / duration, 0, 1);
+        const eased = easeInOutCubic(progress);
+        const curX = adjust(eased, 0, 1, startX, targetX);
+        const curY = adjust(eased, 0, 1, startY, targetY);
+        updateCardTransform(curX, curY, el);
+        if (progress < 1) {
+          rafId.current = requestAnimationFrame(loop);
+        }
+      };
+
+      rafId.current = requestAnimationFrame(loop);
+    },
+    [updateCardTransform]
+  );
+
+  const cancelSmoothAnimation = useCallback(() => {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+  }, []);
+
+  // Mouse handlers
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    cancelSmoothAnimation();
+    const rect = el.getBoundingClientRect();
+    updateCardTransform(e.clientX - rect.left, e.clientY - rect.top, el);
   };
 
-  const resetTilt = (): void => setTilt({ rx: 0, ry: 0 });
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const startX = clamp(e.clientX - rect.left, 0, rect.width);
+    const startY = clamp(e.clientY - rect.top, 0, rect.height);
+    createSmoothAnimation(ANIMATION_CONFIG.SMOOTH_DURATION, startX, startY, el);
+  };
 
   // Touch support
   useEffect(() => {
     const el = cardRef.current;
     if (!el) return;
 
-    const onTouchMove = (e: TouchEvent): void => {
+    const onTouchMove = (e: TouchEvent) => {
       const t = e.touches[0];
-      updateTiltFromEvent(t.clientX, t.clientY);
+      const rect = el.getBoundingClientRect();
+      cancelSmoothAnimation();
+      updateCardTransform(t.clientX - rect.left, t.clientY - rect.top, el);
     };
-    const onTouchEnd = (): void => resetTilt();
+    const onTouchEnd = () => {
+      const rect = el.getBoundingClientRect();
+      const startX = rect.width * pointer.x;
+      const startY = rect.height * pointer.y;
+      createSmoothAnimation(ANIMATION_CONFIG.SMOOTH_DURATION, startX, startY, el);
+    };
 
     el.addEventListener("touchmove", onTouchMove, { passive: true });
     el.addEventListener("touchend", onTouchEnd);
@@ -51,7 +124,18 @@ export default function ProfileCard({
       el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
     };
-  }, []);
+  }, [pointer, updateCardTransform, createSmoothAnimation, cancelSmoothAnimation]);
+
+  // Initial glide-in
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || !wrapRef.current) return;
+    const startX = wrapRef.current.clientWidth - ANIMATION_CONFIG.INITIAL_X_OFFSET;
+    const startY = ANIMATION_CONFIG.INITIAL_Y_OFFSET;
+    updateCardTransform(startX, startY, el);
+    createSmoothAnimation(ANIMATION_CONFIG.INITIAL_DURATION, startX, startY, el);
+    return () => cancelSmoothAnimation();
+  }, [updateCardTransform, createSmoothAnimation, cancelSmoothAnimation]);
 
   const cssVars = useMemo(
     () => ({
@@ -63,13 +147,10 @@ export default function ProfileCard({
 
   return (
     <div
+      ref={wrapRef}
       className="relative isolate perspective-1000"
-      style={{
-        // Width scales with screen, keeps min & max for readability
-        width: "clamp(12rem, 80vw, 27rem)",
-      }}
+      style={{ width: "clamp(12rem, 80vw, 27rem)" }}
     >
-      {/* Floating background accents */}
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -89,15 +170,12 @@ export default function ProfileCard({
           ...cssVars,
           willChange: "transform",
         }}
-        onMouseMove={(e) => updateTiltFromEvent(e.clientX, e.clientY)}
-        onMouseLeave={resetTilt}
-        className={`group relative rounded-3xl p-1 ring-1 backdrop-blur-xl transition-transform duration-150 ${
-          isDarkMode
-            ? "bg-white/5 ring-white/10"
-            : "bg-black/5 ring-black/10"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className={`group relative rounded-3xl p-1 ring-1 backdrop-blur-xl ${
+          isDarkMode ? "bg-white/5 ring-white/10" : "bg-black/5 ring-black/10"
         }`}
       >
-        {/* Reactive edge glow */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-[1.5rem]"
@@ -116,7 +194,6 @@ export default function ProfileCard({
           }}
         />
 
-        {/* Card content */}
         <div
           className={`relative rounded-[1.4rem] p-4 ${
             isDarkMode
@@ -124,18 +201,12 @@ export default function ProfileCard({
               : "bg-gradient-to-b from-gray-200/85 to-gray-300/75"
           }`}
         >
-          {/* Shooting stars overlay */}
           <Stars isDarkMode={isDarkMode} />
-
-          {/* Photo container */}
           <div
             className={`relative w-full overflow-hidden rounded-2xl ring-1 ${
               isDarkMode ? "ring-white/10" : "ring-black/10"
             }`}
-            style={{
-              // Maintains consistent aspect ratio as card scales
-              aspectRatio: "4 / 5",
-            }}
+            style={{ aspectRatio: "4 / 5" }}
           >
             <img
               src={photoUrl}
@@ -156,10 +227,8 @@ export default function ProfileCard({
         </div>
       </motion.div>
 
-      {/* Local styles for animations */}
       <style>{`
         .perspective-1000 { perspective: 1000px; }
-        /* Streak animation */
         @keyframes shoot {
           0% { transform: translate3d(-20%, -20%, 0) rotate(20deg); opacity: 0; }
           10% { opacity: 1; }
@@ -173,7 +242,7 @@ export default function ProfileCard({
 function Stars({ isDarkMode }: { isDarkMode: boolean }): React.JSX.Element {
   const streaks = useMemo(
     () =>
-      Array.from({ length: 6 }).map((_, i) => ({
+      Array.from({ length: 20 }).map((_, i) => ({
         id: i,
         top: Math.random() * 100,
         left: Math.random() * 100,
