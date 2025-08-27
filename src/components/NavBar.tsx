@@ -163,7 +163,13 @@ function Navbar(): React.JSX.Element {
             '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
         }}
       >
-        <div className={`mx-auto transition-all duration-300 ease-out ${scrolled ? 'w-[95%]' : 'w-[90%]'}`}>
+        <div
+          className={`
+            mx-auto transition-all duration-300 ease-out 
+            ${scrolled ? 'w-[95%]' : 'w-[90%]'}
+          `}
+        >
+
           <div
             className={`rounded-2xl transition-all duration-300 ${
               scrolled

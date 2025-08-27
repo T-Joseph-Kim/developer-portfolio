@@ -51,11 +51,11 @@ const About: React.FC = () => {
 
     confetti({
       particleCount: 40,
-      spread: 40,
+      spread: 100,
       startVelocity: 25,
       origin: { x, y },
       colors: ['#6366F1', '#EC4899', '#3B82F6', '#22D3EE'],
-      scalar: 0.8,
+      scalar: 0.6,
     });
   };
 
