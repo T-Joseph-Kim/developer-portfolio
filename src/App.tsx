@@ -9,6 +9,7 @@ import ProfileCard from './components/ProfileCard';
 import About from './components/About';
 import ScrollArrow from './components/ScrollArrow';
 import { useTheme } from './contexts/ThemeContext';
+import ResumeButton from './components/ResumeButton';
 
 function App(): React.JSX.Element {
   const [fadeOutTerminal, setFadeOutTerminal] = useState<boolean>(false);
@@ -73,19 +74,26 @@ function App(): React.JSX.Element {
       >
         <section
           id="home"
-          className="min-h-[calc(100vh-10rem)] flex items-center justify-center"
+          className="min-h-[calc(100vh-10rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8"
         >
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-7xl w-full">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-6xl w-full mx-auto">
             {/* About component - left side */}
-            <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+            <div className="flex flex-col items-center md:items-start">
               <About />
             </div>
 
             {/* ProfileCard - right side */}
-            <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+            <div className="flex flex-col items-center md:items-start">
               <ProfileCard />
             </div>
           </div>
+        </section>
+
+        <section
+          id="fun"
+          className="h-screen flex flex-col items-center justify-center gap-6 text-center"
+        >
+          <ResumeButton />
         </section>
 
         <section id="experience" className="h-screen flex items-center justify-center text-3xl">
