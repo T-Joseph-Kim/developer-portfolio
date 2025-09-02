@@ -58,8 +58,8 @@ function TerminalLoader({ onFinish }: TerminalLoaderProps): React.JSX.Element {
       <div
         className={`rounded-xl shadow-lg border flex flex-col overflow-hidden
           w-[85%] h-[25%]       /* mobile */
-          sm:w-[80%] sm:h-[50%] /* tablet */
-          md:w-[80%] md:h-[50%] md:max-w-xl /* desktop */
+          sm:w-[80%] sm:h-[40%] /* tablet */
+          md:w-[80%] md:h-[40%] md:max-w-xl /* desktop */
           ${isDarkMode ? 'bg-zinc-950 border-zinc-700' : 'bg-white border-gray-300'}
         `}
       >
