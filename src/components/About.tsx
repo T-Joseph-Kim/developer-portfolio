@@ -1,45 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import confetti from 'canvas-confetti';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import confetti from "canvas-confetti";
+import { useTheme } from "../contexts/ThemeContext";
 
 const About: React.FC = () => {
   const { isDarkMode } = useTheme();
   const [currentRole, setCurrentRole] = useState(0);
-  const [displayText, setDisplayText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
 
   const nameRef = useRef<HTMLHeadingElement>(null);
 
-  const roles = ['Full-Stack Developer', 'Cloud Engineer', 'Software Engineer'];
+  // Roles are objects with a title and emoji
+  const roles = [
+    { title: "Full-Stack Developer", emoji: "💻" },
+    { title: "Cloud Engineer", emoji: "☁️" },
+    { title: "Software Engineer", emoji: "🛠️" },
+  ];
 
+  // Cycle roles every few seconds
   useEffect(() => {
-    const currentRoleText = roles[currentRole];
-    let timeout: NodeJS.Timeout;
-
-    if (isTyping) {
-      if (displayText.length < currentRoleText.length) {
-        timeout = setTimeout(() => {
-          setDisplayText(currentRoleText.slice(0, displayText.length + 1));
-        }, 50);
-      } else {
-        timeout = setTimeout(() => {
-          setIsTyping(false);
-        }, 2000);
-      }
-    } else {
-      if (displayText.length > 0) {
-        timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1));
-        }, 40);
-      } else {
-        setCurrentRole((prev) => (prev + 1) % roles.length);
-        setIsTyping(true);
-      }
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isTyping, currentRole, roles]);
+    const interval = setInterval(() => {
+      setCurrentRole((prev) => (prev + 1) % roles.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [roles.length]);
 
   // Confetti burst from center of the name
   const launchConfetti = () => {
@@ -54,7 +37,7 @@ const About: React.FC = () => {
       spread: 100,
       startVelocity: 25,
       origin: { x, y },
-      colors: ['#6366F1', '#EC4899', '#3B82F6', '#22D3EE'],
+      colors: ["#6366F1", "#EC4899", "#3B82F6", "#22D3EE"],
       scalar: 0.6,
     });
   };
@@ -105,13 +88,13 @@ const About: React.FC = () => {
         whileHover={{ scale: 1.05 }}
         onMouseEnter={launchConfetti}
         className={`font-bold mb-6 transition-colors duration-300 name-hover
-          ${isDarkMode ? 'text-white' : 'text-gray-900'}
+          ${isDarkMode ? "text-white" : "text-gray-900"}
           text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl
         `}
         style={{
           fontFamily:
             '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          cursor: 'pointer',
+          cursor: "pointer",
         }}
       >
         T. Joseph Kim
@@ -123,7 +106,7 @@ const About: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
         className={`text-base sm:text-lg md:text-xl font-medium mb-6 ${
-          isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          isDarkMode ? "text-gray-300" : "text-gray-700"
         }`}
         style={{
           fontFamily:
@@ -141,7 +124,7 @@ const About: React.FC = () => {
         className="h-12 flex items-center justify-center md:justify-start"
       >
         <motion.div
-          key={roles[currentRole]}
+          key={roles[currentRole].title}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
@@ -155,7 +138,8 @@ const About: React.FC = () => {
               '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           }}
         >
-          {roles[currentRole].split("").map((char, i) => (
+          {/* Animate each character */}
+          {roles[currentRole].title.split("").map((char, i) => (
             <motion.span
               key={i}
               initial={{ opacity: 0, y: 10 }}
@@ -165,6 +149,17 @@ const About: React.FC = () => {
               {char === " " ? "\u00A0" : char}
             </motion.span>
           ))}
+
+          {/* Emoji appears after the text */}
+          <motion.span
+            key="emoji"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: roles[currentRole].title.length * 0.05 }}
+            className="ml-2"
+          >
+            {roles[currentRole].emoji}
+          </motion.span>
         </motion.div>
       </motion.div>
     </div>
