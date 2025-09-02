@@ -41,7 +41,7 @@ const About: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [displayText, isTyping, currentRole, roles]);
 
-  // 🎉 Confetti burst from center of the name
+  // Confetti burst from center of the name
   const launchConfetti = () => {
     if (!nameRef.current) return;
 
@@ -61,12 +61,33 @@ const About: React.FC = () => {
 
   return (
     <div className="flex flex-col justify-center h-full text-center md:text-left">
+      {/* Status indicator */}
+      <div className="flex items-center justify-center md:justify-start mb-4">
+        <span className="relative flex h-3 w-3 mr-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        </span>
+        <span
+          className={`text-md font-medium ${
+            isDarkMode ? "text-gray-300" : "text-gray-700"
+          }`}
+          style={{
+            fontFamily:
+              '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          }}
+        >
+          Let’s connect
+        </span>
+      </div>
+
       {/* Hello text */}
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className={`text-2xl mb-3 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}
+        className={`text-2xl mb-3 ${
+          isDarkMode ? "text-gray-400" : "text-gray-600"
+        }`}
         style={{
           fontFamily:
             '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -112,29 +133,39 @@ const About: React.FC = () => {
         University of Florida · B.S. in Computer Science
       </motion.p>
 
-      {/* Typing effect for roles */}
+      {/* Roles */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="h-10"
+        className="h-12 flex items-center justify-center md:justify-start"
       >
-        <span
-          className={`font-medium ${
-            isDarkMode ? 'text-blue-400' : 'text-blue-600'
-          } text-xl sm:text-xl md:text-2xl lg:text-2xl`}
+        <motion.div
+          key={roles[currentRole]}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.3 }}
+          className={`inline-flex items-center justify-center px-6 py-3 rounded-full 
+            text-md sm:text-lg md:text-xl lg:text-xl font-semibold
+            ${isDarkMode ? "bg-blue-400/10 text-blue-400" : "bg-blue-100 text-blue-600"}
+          `}
           style={{
             fontFamily:
               '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
           }}
         >
-          {displayText}
-          <span
-            className={`inline-block ml-1 animate-pulse ${
-              isDarkMode ? 'bg-blue-400' : 'bg-blue-600'
-            } w-0.5 h-5 sm:h-6 md:h-7 lg:h-8`}
-          />
-        </span>
+          {roles[currentRole].split("").map((char, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
+        </motion.div>
       </motion.div>
     </div>
   );
