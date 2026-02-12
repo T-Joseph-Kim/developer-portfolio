@@ -8,8 +8,11 @@ import ScrollToTop from './components/ScrollToTop';
 import ProfileCard from './components/ProfileCard';
 import About from './components/About';
 import ScrollArrow from './components/ScrollArrow';
+import ExperienceSection from './components/ExperienceSection';
+import ProjectsSection from './components/ProjectsSection';
+import SkillsSection from './components/SkillsSection';
+import ContactSection from './components/ContactSection';
 import { useTheme } from './contexts/ThemeContext';
-import ResumeButton from './components/ResumeButton';
 
 function App(): React.JSX.Element {
   const [fadeOutTerminal, setFadeOutTerminal] = useState<boolean>(false);
@@ -88,28 +91,20 @@ function App(): React.JSX.Element {
             </div>
           </div>
         </section>
-
-        <section
-          id="fun"
-          className="h-screen flex flex-col items-center justify-center gap-6 text-center"
-        >
-          <ResumeButton />
+        <section id="experience" className="min-h-screen flex items-center">
+          <ExperienceSection />
         </section>
 
-        <section id="experience" className="h-screen flex items-center justify-center text-3xl">
-          💼 Experience Section
+        <section id="projects" className="min-h-screen flex items-center">
+          <ProjectsSection />
         </section>
 
-        <section id="projects" className="h-screen flex items-center justify-center text-3xl">
-          🛠️ Projects Section
+        <section id="skills" className="min-h-screen flex items-center">
+          <SkillsSection />
         </section>
 
-        <section id="skills" className="h-screen flex items-center justify-center text-3xl">
-          🎯 Skills Section
-        </section>
-
-        <section id="contact" className="h-screen flex items-center justify-center text-3xl">
-          📫 Contact Section
+        <section id="contact" className="min-h-screen flex items-center">
+          <ContactSection />
         </section>
       </div>
     </div>
@@ -117,3 +112,7 @@ function App(): React.JSX.Element {
 }
 
 export default App;
+
+
+
+

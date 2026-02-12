@@ -9,11 +9,8 @@ function ScrollToTop(): React.JSX.Element {
   useEffect(() => {
     const toggleVisibility = (): void => {
       // Show button when user scrolls down 300px
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
+      const shouldBeVisible = window.scrollY > 300;
+      setIsVisible((prev) => (prev === shouldBeVisible ? prev : shouldBeVisible));
     };
 
     window.addEventListener('scroll', toggleVisibility);

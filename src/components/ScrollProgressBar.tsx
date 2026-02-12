@@ -10,10 +10,10 @@ function ScrollProgressBar(): React.JSX.Element {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setScrollProgress(scrollPercent);
+      setScrollProgress((prev) => (Math.abs(prev - scrollPercent) < 0.1 ? prev : scrollPercent));
     };
 
-    window.addEventListener('scroll', updateScrollProgress);
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
     updateScrollProgress(); // Set initial value
 
     return () => window.removeEventListener('scroll', updateScrollProgress);
