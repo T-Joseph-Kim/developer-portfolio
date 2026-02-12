@@ -87,7 +87,7 @@ function App(): React.JSX.Element {
             </div>
 
             {/* ProfileCard - right side */}
-            <div className="flex flex-col items-center md:items-start">
+            <div className="flex flex-col items-center md:items-start scale-90 md:scale-95 lg:scale-90 origin-center">
               <ProfileCard />
             </div>
           </div>
