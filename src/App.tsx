@@ -8,6 +8,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ProfileCard from './components/ProfileCard';
 import About from './components/About';
 import ScrollArrow from './components/ScrollArrow';
+import ActivityHubSection from './components/ActivityHubSection';
 import ExperienceSection from './components/ExperienceSection';
 import ProjectsSection from './components/ProjectsSection';
 import SkillsSection from './components/SkillsSection';
@@ -91,21 +92,30 @@ function App(): React.JSX.Element {
             </div>
           </div>
         </section>
-        <section id="experience" className="min-h-screen flex items-center">
+
+        <section id="activity" className="py-0">
+          <ActivityHubSection />
+        </section>
+
+        <section id="experience" className="py-0">
           <ExperienceSection />
         </section>
 
-        <section id="projects" className="min-h-screen flex items-center">
+        <section id="projects" className="py-0">
           <ProjectsSection />
         </section>
 
-        <section id="skills" className="min-h-screen flex items-center">
+        <section id="skills" className="py-0">
           <SkillsSection />
         </section>
 
-        <section id="contact" className="min-h-screen flex items-center">
+        <section id="contact" className="py-0">
           <ContactSection />
         </section>
+
+        <div className={`pb-8 text-center text-sm sm:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+          Thank you for looking through my portfolio website! Have a good day :)
+        </div>
       </div>
     </div>
   );
