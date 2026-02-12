@@ -64,7 +64,7 @@ function ContactSection(): React.JSX.Element {
 
   return (
     <div
-      className="w-full max-w-[950px] mx-auto px-4 sm:px-6 lg:px-8 py-24"
+      className="w-full max-w-[950px] mx-auto px-4 sm:px-6 lg:px-8 py-14"
       style={{
         fontFamily:
           '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',

@@ -16,7 +16,7 @@ const experiences: ExperienceItem[] = [
     company: 'Florida Blue, A GuideWell Company',
     role: 'Cloud Engineer Intern',
     dates: 'Aug 2025 - Present',
-    logo: '/logo.svg',
+    logo: '/experience/florida-blue.png',
     details: [
       'Built and integrated custom AVM modules for Splunk and Wiz, extending centralized logging/security into lab and production Azure environments, improving monitoring coverage by 35%.',
       'Enhanced AWS Resource Explorer by implementing a delegated multi-account aggregation model, providing unified visibility across 30+ AWS accounts and reducing resource discovery time by 40%.',
@@ -27,7 +27,7 @@ const experiences: ExperienceItem[] = [
     company: 'Florida Blue, A GuideWell Company',
     role: 'Software Engineer Intern',
     dates: 'May 2025 - Aug 2025',
-    logo: '/logo.svg',
+    logo: '/experience/florida-blue.png',
     details: [
       'Executed user stories in Agile sprints, collaborating with engineers to build and test production-ready features impacting 9,000+ employees and millions of customers.',
       'Resolved a backend timeout issue in the Enterprise Workcenter tool by optimizing both the Spring Boot API layer and its React frontend interaction patterns, reducing repeated API calls by 75% and preventing duplicate task assignments across the organization.',
@@ -38,7 +38,7 @@ const experiences: ExperienceItem[] = [
     company: 'UF Society of Asian Scientists and Engineers',
     role: 'Lead Front-End Developer',
     dates: 'Feb 2024 - May 2025',
-    logo: '/logo.svg',
+    logo: '/experience/uf-sase.png',
     details: [
       'Partnered with a web development team to design and develop the UI for a new website serving 1,000+ members, resulting in a 73% increase in user engagement compared to the previous version.',
       'Implemented 6+ key pages, including the navigation bar, about, board, and programs pages, leveraging Figma, TypeScript, React, and Tailwind CSS.',
@@ -49,7 +49,7 @@ const experiences: ExperienceItem[] = [
     company: 'CourseLynx',
     role: 'Software Engineer Intern',
     dates: 'May 2024 - Aug 2024',
-    logo: '/logo.svg',
+    logo: '/experience/courselynx.png',
     details: [
       'Resolved a critical bug in the Flutter application using Dart, reducing chat load times by 90% for newly added courses, impacting thousands of users and eliminating the need for app restarts.',
       'Engineered a chat message caching system using a Hive database, optimizing the loading time for over 10,000 messages, and improving performance by 80%.',
@@ -66,13 +66,13 @@ function ExperienceSection(): React.JSX.Element {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
 
-  const cardClasses = `rounded-2xl border backdrop-blur-sm transition-colors duration-300 ${
+  const cardClasses = `rounded-2xl border backdrop-blur-sm transition-all duration-300 hover:scale-[1.01] ${
     isDarkMode ? 'bg-white/5 border-white/10 hover:bg-white/[0.07]' : 'bg-black/[0.03] border-black/10 hover:bg-black/[0.05]'
   }`;
 
   return (
     <div
-      className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-20"
+      className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14"
       style={{
         fontFamily:
           '"Red Hat Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -87,12 +87,12 @@ function ExperienceSection(): React.JSX.Element {
       <div className="relative">
         <div
           aria-hidden
-          className={`absolute left-5 top-2 bottom-2 w-px md:hidden ${isDarkMode ? 'bg-white/15' : 'bg-black/15'}`}
+          className={`absolute left-5 top-2 bottom-2 w-px md:hidden ${isDarkMode ? 'bg-white/35' : 'bg-black/25'}`}
         />
         <div
           aria-hidden
           className={`hidden md:block absolute left-1/2 -translate-x-1/2 top-2 bottom-2 w-px ${
-            isDarkMode ? 'bg-white/15' : 'bg-black/15'
+            isDarkMode ? 'bg-white/35' : 'bg-black/25'
           }`}
         />
 
@@ -127,7 +127,7 @@ function ExperienceSection(): React.JSX.Element {
                           <img
                             src={experience.logo}
                             alt={`${experience.company} logo`}
-                            className="w-full h-full object-contain p-2"
+                            className="w-full h-full object-cover"
                             loading="lazy"
                             decoding="async"
                           />
