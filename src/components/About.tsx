@@ -11,7 +11,6 @@ const About: React.FC = () => {
 
   // Roles are objects with a title and emoji
   const roles = [
-    { title: "Full-Stack Developer", emoji: "💻" },
     { title: "Cloud Engineer", emoji: "☁️" },
     { title: "Software Engineer", emoji: "🛠️" },
   ];

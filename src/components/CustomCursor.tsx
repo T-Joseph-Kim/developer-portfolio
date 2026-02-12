@@ -9,19 +9,20 @@ function CustomCursor(): React.JSX.Element {
 
     if (!outerCircle || !cursorDot) return;
 
-    outerCircle.dataset.scale = 'scale(1)';
     outerCircle.style.transition = 'transform 0.1s ease-out';
 
     let mouseX = 0, mouseY = 0;
     let cursorX = 0, cursorY = 0;
     let dotX = 0, dotY = 0;
+    let cursorScale = 1;
+    let animationFrameId = 0;
 
     // Mouse tracking
     const handleMouseMove = (e: MouseEvent): void => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
-    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     let prevOuterTransform = '';
     let prevInnerTransform = '';
@@ -33,7 +34,7 @@ function CustomCursor(): React.JSX.Element {
         dotX += (mouseX - dotX);
         dotY += (mouseY - dotY);
 
-        const outerTransform = `translate(${cursorX - 10}px, ${cursorY - 10}px) ${outerCircle.dataset.scale || 'scale(1)'}`;
+        const outerTransform = `translate(${cursorX - 10}px, ${cursorY - 10}px) scale(${cursorScale})`;
         const innerTransform = `translate(${dotX - 2}px, ${dotY - 2}px)`;
 
         if (outerTransform !== prevOuterTransform) {
@@ -46,7 +47,7 @@ function CustomCursor(): React.JSX.Element {
             prevInnerTransform = innerTransform;
         }
 
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
     };
 
     animate();
@@ -66,7 +67,7 @@ function CustomCursor(): React.JSX.Element {
                                 target.closest('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3');
       
       if (isHoverableElement || isDarkModeSwitch) {
-        outerCircle.dataset.scale = 'scale(1.5)';
+        cursorScale = 1.5;
         // Override cursor style
         if (target.style) {
           target.style.cursor = 'none';
@@ -88,7 +89,7 @@ function CustomCursor(): React.JSX.Element {
                                 target.closest('a, button, .project, .misc-item, .cursor-hover, .name-hover, h1, h2, h3');
       
       if (isHoverableElement || isDarkModeSwitch) {
-        outerCircle.dataset.scale = 'scale(1)';
+        cursorScale = 1;
         outerCircle.style.borderColor = '';
       }
     };
@@ -102,6 +103,7 @@ function CustomCursor(): React.JSX.Element {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseover', handleMouseEnter);
       document.removeEventListener('mouseout', handleMouseLeave);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 

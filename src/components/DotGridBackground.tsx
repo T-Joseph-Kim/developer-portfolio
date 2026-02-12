@@ -30,8 +30,9 @@ function DotGridBackground(): React.JSX.Element {
     const radius = 1.5;
     let mouseX = -1000;
     let mouseY = -1000;
-    let animationFrameId: number;
+    let animationFrameId = 0;
     let lastTimestamp = 0;
+    let isAnimating = false;
 
     const initCanvas = () => {
       const width = window.innerWidth;
@@ -52,6 +53,12 @@ function DotGridBackground(): React.JSX.Element {
 
     const lerp = (start: number, end: number, factor: number): number => start + (end - start) * factor;
 
+    const scheduleDraw = () => {
+      if (isAnimating) return;
+      isAnimating = true;
+      animationFrameId = requestAnimationFrame(draw);
+    };
+
     const draw = (timestamp: number): void => {
       // Throttle frame rate to ~60fps
       if (timestamp - lastTimestamp < 16) {
@@ -65,6 +72,7 @@ function DotGridBackground(): React.JSX.Element {
 
       const visibleTop = window.scrollY - 300;
       const visibleBottom = window.scrollY + window.innerHeight + 300;
+      let hasActiveTransitions = false;
 
       for (const dot of dotsRef.current) {
         if (dot.y < visibleTop || dot.y > visibleBottom) continue;
@@ -80,6 +88,9 @@ function DotGridBackground(): React.JSX.Element {
         }
 
         dot.current = lerp(dot.current, dot.target, 0.15);
+        if (Math.abs(dot.current - dot.target) > 0.005) {
+          hasActiveTransitions = true;
+        }
 
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
@@ -93,35 +104,48 @@ function DotGridBackground(): React.JSX.Element {
         ctx.fill();
       }
 
-      animationFrameId = requestAnimationFrame(draw);
+      if (hasActiveTransitions) {
+        animationFrameId = requestAnimationFrame(draw);
+      } else {
+        isAnimating = false;
+      }
     };
 
     const handleMouseMove = (e: MouseEvent): void => {
       mouseX = e.clientX;
       mouseY = e.clientY + window.scrollY;
+      scheduleDraw();
     };
 
     const handleMouseLeave = () => {
       mouseX = -1000;
       mouseY = -1000;
+      scheduleDraw();
     };
 
     const handleResize = () => {
       initCanvas();
+      scheduleDraw();
+    };
+
+    const handleScroll = () => {
+      scheduleDraw();
     };
 
     // Init once
     initCanvas();
-    animationFrameId = requestAnimationFrame(draw);
+    scheduleDraw();
 
     // Event listeners
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize);
     document.addEventListener('mouseleave', handleMouseLeave);
     window.addEventListener('blur', handleMouseLeave);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('blur', handleMouseLeave);
