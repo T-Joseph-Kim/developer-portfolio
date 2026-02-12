@@ -50,6 +50,7 @@ function ActivityHubSection(): React.JSX.Element {
   const [graphSrc, setGraphSrc] = useState<string>(`https://github.com/users/${GITHUB_USERNAME}/contributions`);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [isLiking, setIsLiking] = useState<boolean>(false);
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
   const [weather, setWeather] = useState<WeatherSnapshot | null>(null);
   const [isLoadingWeather, setIsLoadingWeather] = useState<boolean>(true);
 
@@ -160,7 +161,7 @@ function ActivityHubSection(): React.JSX.Element {
   }, []);
 
   const addLike = async (): Promise<void> => {
-    if (isLiking) return;
+    if (isLiking || hasLiked) return;
     setIsLiking(true);
     try {
       const response = await fetch(LIKES_ENDPOINT, { method: 'POST', cache: 'no-store' });
@@ -169,10 +170,12 @@ function ActivityHubSection(): React.JSX.Element {
       const value = typeof data.value === 'number' ? data.value : likeCount + 1;
       setLikeCount(value);
       saveLocalLikes(value);
+      setHasLiked(true);
     } catch {
       const value = likeCount + 1;
       setLikeCount(value);
       saveLocalLikes(value);
+      setHasLiked(true);
     } finally {
       setIsLiking(false);
     }
@@ -351,22 +354,22 @@ function ActivityHubSection(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={addLike}
-                  disabled={isLiking}
-                  aria-label="Add a like"
+                  disabled={isLiking || hasLiked}
+                  aria-label={hasLiked ? 'Liked' : 'Add a like'}
                   className={`inline-flex h-12 w-12 items-center justify-center rounded-full border transition-transform duration-200 hover:scale-105 active:scale-95 ${
                     isDarkMode
                       ? 'border-white/20 bg-white/[0.06] text-rose-300 hover:bg-white/[0.12]'
                       : 'border-black/20 bg-black/[0.04] text-rose-600 hover:bg-black/[0.10]'
                   }`}
                 >
-                  <Heart className={`h-6 w-6 ${isLiking ? 'animate-pulse' : ''}`} fill="currentColor" />
+                  <Heart className={`h-6 w-6 ${isLiking ? 'animate-pulse' : ''}`} fill={hasLiked ? 'currentColor' : 'none'} />
                 </button>
                 <span
                   className={`pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 ${
                     isDarkMode ? 'bg-white text-black' : 'bg-gray-900 text-white'
                   }`}
                 >
-                  Add a like!
+                  {hasLiked ? 'Liked!' : 'Add a like!'}
                 </span>
               </div>
 
