@@ -21,8 +21,7 @@ interface WeatherSnapshot {
 const GITHUB_USERNAME = 'T-Joseph-Kim';
 const SPOTIFY_RECENT_ENDPOINT =
   (import.meta.env.VITE_SPOTIFY_RECENT_ENDPOINT as string | undefined) ?? '/api/spotify/recently-played';
-const LIKE_NAMESPACE = 't-joseph-kim-portfolio';
-const LIKE_KEY = 'activity-hub-likes';
+const LIKES_ENDPOINT = '/api/likes';
 const LIKE_STORAGE_KEY = 'activity_hub_likes';
 
 const getSpotifyTrackId = (songUrl: string): string | null => {
@@ -69,7 +68,8 @@ function ActivityHubSection(): React.JSX.Element {
 
     const loadTrack = async (): Promise<void> => {
       try {
-        const response = await fetch(SPOTIFY_RECENT_ENDPOINT);
+        const url = `${SPOTIFY_RECENT_ENDPOINT}${SPOTIFY_RECENT_ENDPOINT.includes('?') ? '&' : '?'}t=${Date.now()}`;
+        const response = await fetch(url, { cache: 'no-store' });
         if (!response.ok) throw new Error('Could not fetch latest track');
         const data = (await response.json()) as SpotifyTrack;
         if (!isMounted) return;
@@ -93,7 +93,7 @@ function ActivityHubSection(): React.JSX.Element {
 
     const loadLikes = async (): Promise<void> => {
       try {
-        const response = await fetch(`https://api.countapi.xyz/get/${LIKE_NAMESPACE}/${LIKE_KEY}`);
+        const response = await fetch(`${LIKES_ENDPOINT}?t=${Date.now()}`, { cache: 'no-store' });
         if (!response.ok) throw new Error('Could not load like count');
         const data = (await response.json()) as { value?: number };
         if (!isMounted) return;
@@ -163,7 +163,7 @@ function ActivityHubSection(): React.JSX.Element {
     if (isLiking) return;
     setIsLiking(true);
     try {
-      const response = await fetch(`https://api.countapi.xyz/hit/${LIKE_NAMESPACE}/${LIKE_KEY}`);
+      const response = await fetch(LIKES_ENDPOINT, { method: 'POST', cache: 'no-store' });
       if (!response.ok) throw new Error('Could not increment like count');
       const data = (await response.json()) as { value?: number };
       const value = typeof data.value === 'number' ? data.value : likeCount + 1;
@@ -227,7 +227,11 @@ function ActivityHubSection(): React.JSX.Element {
         />
 
         <div className="relative grid grid-cols-1 gap-4 lg:grid-cols-12 lg:grid-rows-[auto_auto]">
-          <article
+          <motion.article
+            initial={{ opacity: 0, x: -24, y: 16 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
             className={`rounded-2xl border p-3 sm:p-4 lg:col-span-8 lg:row-start-2 lg:min-h-[170px] transition-transform duration-300 hover:scale-[1.01] ${
               isDarkMode ? 'border-white/10 bg-black/30' : 'border-black/10 bg-white/70'
             }`}
@@ -263,9 +267,13 @@ function ActivityHubSection(): React.JSX.Element {
                 }}
               />
             </div>
-          </article>
+          </motion.article>
 
-          <article
+          <motion.article
+            initial={{ opacity: 0, x: -24, y: 16 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.02, ease: 'easeOut' }}
             className={`rounded-2xl border p-3 sm:p-4 lg:col-span-8 lg:row-start-1 lg:min-h-[240px] transition-transform duration-300 hover:scale-[1.01] ${
               isDarkMode ? 'border-white/10 bg-black/30' : 'border-black/10 bg-white/70'
             }`}
@@ -324,9 +332,13 @@ function ActivityHubSection(): React.JSX.Element {
                 Set <code>VITE_SPOTIFY_RECENT_ENDPOINT</code> to show your live recently played song.
               </div>
             )}
-          </article>
+          </motion.article>
 
-          <article
+          <motion.article
+            initial={{ opacity: 0, x: 24, y: 16 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.14, ease: 'easeOut' }}
             className={`rounded-2xl border p-3 sm:p-4 lg:col-span-4 lg:col-start-9 lg:row-start-1 lg:min-h-[150px] transition-transform duration-300 hover:scale-[1.01] ${
               isDarkMode ? 'border-white/10 bg-black/30' : 'border-black/10 bg-white/70'
             }`}
@@ -363,9 +375,13 @@ function ActivityHubSection(): React.JSX.Element {
                 <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>total likes</p>
               </div>
             </div>
-          </article>
+          </motion.article>
 
-          <article
+          <motion.article
+            initial={{ opacity: 0, x: 24, y: 16 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
             className={`rounded-2xl border p-3 sm:p-4 lg:col-span-4 lg:col-start-9 lg:row-start-2 lg:min-h-[150px] transition-transform duration-300 hover:scale-[1.01] ${
               isDarkMode ? 'border-white/10 bg-black/30' : 'border-black/10 bg-white/70'
             }`}
@@ -392,7 +408,7 @@ function ActivityHubSection(): React.JSX.Element {
                 Weather data unavailable right now.
               </p>
             )}
-          </article>
+          </motion.article>
 
         </div>
       </motion.div>

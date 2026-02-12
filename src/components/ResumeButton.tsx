@@ -22,7 +22,7 @@ const ResumeButton: React.FC = () => {
         onClick={() => {
           const link = document.createElement("a");
           link.href = "/resume.pdf"; // put resume.pdf in /public
-          link.download = "TJosephKim_Resume.pdf";
+          link.download = "Taebok_Joseph_Kim_Resume.pdf";
           link.click();
         }}
       >

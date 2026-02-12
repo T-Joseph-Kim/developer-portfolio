@@ -102,7 +102,7 @@ function ExperienceSection(): React.JSX.Element {
             const isLeft = index % 2 === 0;
 
             const card = (
-              <div className={`${cardClasses} w-full max-w-[760px]`}>
+              <div className={`${cardClasses} w-full max-w-[680px]`}>
                 <div className="p-4 sm:p-6">
                   <div
                     role="button"
