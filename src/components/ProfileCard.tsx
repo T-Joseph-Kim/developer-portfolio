@@ -27,9 +27,14 @@ export default function ProfileCard({
   const wrapRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number | null>(null);
+  const pointerRef = useRef({ x: 0.5, y: 0.5 });
 
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 });
   const [pointer, setPointer] = useState({ x: 0.5, y: 0.5 });
+
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
 
   const updateCardTransform = useCallback(
     (offsetX: number, offsetY: number, el: HTMLElement) => {
@@ -113,8 +118,8 @@ export default function ProfileCard({
     };
     const onTouchEnd = () => {
       const rect = el.getBoundingClientRect();
-      const startX = rect.width * pointer.x;
-      const startY = rect.height * pointer.y;
+      const startX = rect.width * pointerRef.current.x;
+      const startY = rect.height * pointerRef.current.y;
       createSmoothAnimation(ANIMATION_CONFIG.SMOOTH_DURATION, startX, startY, el);
     };
 
@@ -124,7 +129,7 @@ export default function ProfileCard({
       el.removeEventListener("touchmove", onTouchMove);
       el.removeEventListener("touchend", onTouchEnd);
     };
-  }, [pointer, updateCardTransform, createSmoothAnimation, cancelSmoothAnimation]);
+  }, [updateCardTransform, createSmoothAnimation, cancelSmoothAnimation]);
 
   // Initial glide-in
   useEffect(() => {
