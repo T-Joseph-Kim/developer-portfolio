@@ -97,12 +97,18 @@ function ExperienceSection(): React.JSX.Element {
       <div className="relative">
         <div
           aria-hidden
-          className={`absolute left-5 top-2 bottom-2 w-px md:hidden ${isDarkMode ? 'bg-white/35' : 'bg-black/25'}`}
+          className={`absolute left-5 top-2 bottom-2 w-px md:hidden ${
+            isDarkMode
+              ? 'bg-gradient-to-b from-transparent via-white/35 to-transparent'
+              : 'bg-gradient-to-b from-transparent via-black/25 to-transparent'
+          }`}
         />
         <div
           aria-hidden
           className={`hidden md:block absolute left-1/2 -translate-x-1/2 top-2 bottom-2 w-px ${
-            isDarkMode ? 'bg-white/35' : 'bg-black/25'
+            isDarkMode
+              ? 'bg-gradient-to-b from-transparent via-white/35 to-transparent'
+              : 'bg-gradient-to-b from-transparent via-black/25 to-transparent'
           }`}
         />
 
