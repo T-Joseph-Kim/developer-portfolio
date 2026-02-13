@@ -14,6 +14,7 @@ import ProjectsSection from './components/ProjectsSection';
 import SkillsSection from './components/SkillsSection';
 import ContactSection from './components/ContactSection';
 import { useTheme } from './contexts/ThemeContext';
+import { motion } from 'framer-motion';
 
 function App(): React.JSX.Element {
   const [fadeOutTerminal, setFadeOutTerminal] = useState<boolean>(false);
@@ -80,7 +81,13 @@ function App(): React.JSX.Element {
           id="home"
           className="min-h-[calc(100vh-10rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8"
         >
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-6xl w-full mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+            className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-14 max-w-6xl w-full mx-auto"
+          >
             {/* About component - left side */}
             <div className="flex flex-col items-center md:items-start">
               <About />
@@ -90,32 +97,73 @@ function App(): React.JSX.Element {
             <div className="flex flex-col items-center md:items-start scale-90 md:scale-95 lg:scale-90 origin-center">
               <ProfileCard />
             </div>
-          </div>
+          </motion.div>
         </section>
 
-        <section id="activity" className="py-0">
+        <motion.section
+          id="activity"
+          className="py-0"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        >
           <ActivityHubSection />
-        </section>
+        </motion.section>
 
-        <section id="experience" className="py-0">
+        <motion.section
+          id="experience"
+          className="py-0"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        >
           <ExperienceSection />
-        </section>
+        </motion.section>
 
-        <section id="projects" className="py-0">
+        <motion.section
+          id="projects"
+          className="py-0"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        >
           <ProjectsSection />
-        </section>
+        </motion.section>
 
-        <section id="skills" className="py-0">
+        <motion.section
+          id="skills"
+          className="py-0"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        >
           <SkillsSection />
-        </section>
+        </motion.section>
 
-        <section id="contact" className="py-0">
+        <motion.section
+          id="contact"
+          className="py-0"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+        >
           <ContactSection />
-        </section>
+        </motion.section>
 
-        <div className={`pb-8 text-center text-sm sm:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.7 }}
+          transition={{ duration: 0.45, ease: 'easeOut' }}
+          className={`pb-8 text-center text-sm sm:text-base ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}
+        >
           Thank you for looking through my portfolio website! Have a good day :)
-        </div>
+        </motion.div>
       </div>
     </div>
   );
