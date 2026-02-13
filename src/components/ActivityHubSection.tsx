@@ -194,9 +194,6 @@ function ActivityHubSection(): React.JSX.Element {
           <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
             Activity Hub
           </h2>
-          <p className={`mt-3 text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-            A single dashboard with what I am building and listening to!
-          </p>
         </div>
 
         <a

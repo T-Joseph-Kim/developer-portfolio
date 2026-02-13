@@ -17,7 +17,7 @@ const projects: Project[] = [
     description: 'Interactive portfolio website with custom motion, dynamic sections, and polished responsive UI.',
     imageUrl: '/projects/portfolio-project.png',
     githubUrl: 'https://github.com/T-Joseph-Kim/developer-portfolio',
-    tech: ['React', 'TypeScript', 'Tailwind', 'Framer Motion'],
+    tech: ['React', 'TypeScript', 'Tailwind', 'Express', 'Vercel', 'Upstash Database'],
   },
   {
     name: 'WAD Filesystem',
@@ -31,21 +31,21 @@ const projects: Project[] = [
     description: 'Therapy chatbot focused on supportive conversation flows and accessible user experience.',
     imageUrl: '/projects/theratalk-project.png',
     githubUrl: 'https://github.com/T-Joseph-Kim/SASEHackathon-TheraTalk',
-    tech: ['React', 'TypeScript', 'Node.js'],
+    tech: ['Python', 'Flask', 'HTML'],
   },
   {
     name: 'BumbleBot Robocode',
     description: 'Autonomous Robocode bot with strategic movement, targeting logic, and iterative performance tuning.',
     imageUrl: '/projects/bumblebot-project.png',
     githubUrl: 'https://github.com/T-Joseph-Kim/RoboCodeBumbleBot',
-    tech: ['Java', 'Algorithms', 'Robocode'],
+    tech: ['C#', 'Robocode Framework', 'Finite State Machine'],
   },
   {
     name: 'A* Search Algorithm',
     description: 'Pathfinding implementation using A* with heuristic tuning and visualized shortest-path behavior.',
     imageUrl: '/projects/astarsearch-project.png',
     githubUrl: 'https://github.com/T-Joseph-Kim/PathSearchAStarAlgo',
-    tech: ['Python', 'Algorithms', 'Graph Search'],
+    tech: ['C++', 'A* Search', 'Graph Search'],
   },
   {
     name: 'Minesweeper Clone SFML',
@@ -72,7 +72,7 @@ function ProjectsSection(): React.JSX.Element {
           Projects
         </h2>
         <p className={`mt-3 text-base sm:text-lg ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-          Built projects I enjoy using and improving.
+          Projects I've enjoyed building!
         </p>
       </div>
 

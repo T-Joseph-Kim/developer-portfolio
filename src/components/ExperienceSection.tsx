@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -8,7 +8,9 @@ interface ExperienceItem {
   role: string;
   dates: string;
   logo: string;
+  tech: string[];
   details: string[];
+  websiteUrl?: string;
 }
 
 const experiences: ExperienceItem[] = [
@@ -17,6 +19,8 @@ const experiences: ExperienceItem[] = [
     role: 'Cloud Engineer Intern',
     dates: 'Aug 2025 - Present',
     logo: '/experience/florida-blue.png',
+    tech: ['AWS', 'Azure', 'Python', 'Terraform'],
+    websiteUrl: 'https://floridablue.com',
     details: [
       'Built and integrated custom AVM modules for Splunk and Wiz, extending centralized logging/security into lab and production Azure environments, improving monitoring coverage by 35%.',
       'Enhanced AWS Resource Explorer by implementing a delegated multi-account aggregation model, providing unified visibility across 30+ AWS accounts and reducing resource discovery time by 40%.',
@@ -28,6 +32,8 @@ const experiences: ExperienceItem[] = [
     role: 'Software Engineer Intern',
     dates: 'May 2025 - Aug 2025',
     logo: '/experience/florida-blue.png',
+    tech: ['React', 'Spring Boot', 'Java'],
+    websiteUrl: 'https://floridablue.com',
     details: [
       'Executed user stories in Agile sprints, collaborating with engineers to build and test production-ready features impacting 9,000+ employees and millions of customers.',
       'Resolved a backend timeout issue in the Enterprise Workcenter tool by optimizing both the Spring Boot API layer and its React frontend interaction patterns, reducing repeated API calls by 75% and preventing duplicate task assignments across the organization.',
@@ -39,6 +45,8 @@ const experiences: ExperienceItem[] = [
     role: 'Lead Front-End Developer',
     dates: 'Feb 2024 - May 2025',
     logo: '/experience/uf-sase.png',
+    tech: ['TypeScript', 'React', 'Tailwind CSS', 'Figma', 'Vercel'],
+    websiteUrl: 'https://ufsase.com',
     details: [
       'Partnered with a web development team to design and develop the UI for a new website serving 1,000+ members, resulting in a 73% increase in user engagement compared to the previous version.',
       'Implemented 6+ key pages, including the navigation bar, about, board, and programs pages, leveraging Figma, TypeScript, React, and Tailwind CSS.',
@@ -50,6 +58,8 @@ const experiences: ExperienceItem[] = [
     role: 'Software Engineer Intern',
     dates: 'May 2024 - Aug 2024',
     logo: '/experience/courselynx.png',
+    tech: ['Flutter', 'Dart', 'Hive'],
+    websiteUrl: 'https://courselynx.com',
     details: [
       'Resolved a critical bug in the Flutter application using Dart, reducing chat load times by 90% for newly added courses, impacting thousands of users and eliminating the need for app restarts.',
       'Engineered a chat message caching system using a Hive database, optimizing the loading time for over 10,000 messages, and improving performance by 80%.',
@@ -96,73 +106,91 @@ function ExperienceSection(): React.JSX.Element {
           }`}
         />
 
-        <div className="space-y-6 md:space-y-10">
+        <div className="space-y-3 md:space-y-6">
           {experiences.map((experience, index) => {
             const isOpen = openIndex === index;
             const isLeft = index % 2 === 0;
 
             const card = (
               <div className={`${cardClasses} w-full max-w-[680px]`}>
-                <div className="p-4 sm:p-6">
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={isOpen}
-                    onClick={() => toggleOpen(index)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        toggleOpen(index);
-                      }
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex items-center gap-4 min-w-0">
-                        <div
-                          className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-xl overflow-hidden border ${
-                            isDarkMode ? 'border-white/10 bg-white/10' : 'border-black/10 bg-white'
-                          }`}
-                        >
-                          <img
-                            src={experience.logo}
-                            alt={`${experience.company} logo`}
-                            className="w-full h-full object-cover"
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </div>
+                <div className="p-4 sm:p-5">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className={`w-14 h-14 sm:w-20 sm:h-20 shrink-0 rounded-xl overflow-hidden border ${
+                          isDarkMode ? 'border-white/10 bg-white/10' : 'border-black/10 bg-white'
+                        }`}
+                      >
+                        <img
+                          src={experience.logo}
+                          alt={`${experience.company} logo`}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
 
-                        <div className="min-w-0">
+                      <div className="min-w-0">
+                        {experience.websiteUrl ? (
+                          <a
+                            href={experience.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1 text-sm sm:text-base font-medium underline underline-offset-4 ${
+                              isDarkMode ? 'text-sky-300 hover:text-sky-200' : 'text-blue-700 hover:text-blue-800'
+                            }`}
+                          >
+                            <span>{experience.company}</span>
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        ) : (
                           <p className={`text-sm sm:text-base font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                             {experience.company}
                           </p>
-                          <div
-                            className={`inline-flex items-center gap-2 text-left font-semibold text-lg sm:text-xl ${
-                              isDarkMode ? 'text-white' : 'text-gray-900'
-                            }`}
-                          >
-                            <span>{experience.role}</span>
-                            <ChevronDown
-                              className={`h-4 w-4 transition-all duration-200 ${
-                                isOpen ? 'rotate-180 opacity-100' : 'opacity-0 group-hover:opacity-100'
-                              }`}
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className={`text-sm sm:text-base whitespace-nowrap ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                        {experience.dates}
+                        )}
+                        <h3 className={`mt-0.5 text-left font-semibold text-lg sm:text-xl ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {experience.role}
+                        </h3>
                       </div>
                     </div>
+
+                    <div className={`text-sm sm:text-base whitespace-nowrap ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                      {experience.dates}
+                    </div>
                   </div>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {experience.tech.map((item) => (
+                      <span
+                        key={`${experience.role}-${item}`}
+                        className={`rounded-full px-3 py-1 text-xs sm:text-sm ${
+                          isDarkMode ? 'bg-white/10 text-gray-200' : 'bg-black/10 text-gray-700'
+                        }`}
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleOpen(index)}
+                    className={`mt-3 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                      isDarkMode
+                        ? 'border-white/20 text-gray-200 hover:bg-white/10'
+                        : 'border-black/20 text-gray-800 hover:bg-black/5'
+                    }`}
+                  >
+                    <span>{isOpen ? 'Hide details' : 'View details'}</span>
+                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                  </button>
 
                   <AnimatePresence initial={false}>
                     {isOpen && (
                       <motion.ul
                         initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: 'auto', marginTop: 16 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
                         exit={{ opacity: 0, height: 0, marginTop: 0 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
                         className={`overflow-hidden ml-2 sm:ml-4 list-disc pl-5 space-y-2 ${
