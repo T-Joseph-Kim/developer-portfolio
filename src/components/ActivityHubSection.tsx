@@ -24,6 +24,9 @@ const SPOTIFY_RECENT_ENDPOINT =
 const LIKES_ENDPOINT = '/api/likes';
 const LIKE_STORAGE_KEY = 'activity_hub_likes';
 
+let recentTrackRequest: Promise<SpotifyTrack | null> | null = null;
+let recentTrackCache: SpotifyTrack | null | undefined;
+
 const getSpotifyTrackId = (songUrl: string): string | null => {
   const match = songUrl.match(/track\/([A-Za-z0-9]+)/);
   return match?.[1] ?? null;
@@ -41,6 +44,29 @@ const toWeatherLabel = (code: number): string => {
   if ([85, 86].includes(code)) return 'Snow showers';
   if ([95, 96, 99].includes(code)) return 'Thunderstorm';
   return 'Unknown';
+};
+
+const fetchRecentTrackOnce = async (): Promise<SpotifyTrack | null> => {
+  if (!SPOTIFY_RECENT_ENDPOINT) return null;
+  if (recentTrackCache !== undefined) return recentTrackCache;
+  if (recentTrackRequest) return recentTrackRequest;
+
+  recentTrackRequest = (async () => {
+    try {
+      const response = await fetch(SPOTIFY_RECENT_ENDPOINT, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Could not fetch latest track');
+      const data = (await response.json()) as SpotifyTrack;
+      recentTrackCache = data;
+      return data;
+    } catch {
+      recentTrackCache = null;
+      return null;
+    } finally {
+      recentTrackRequest = null;
+    }
+  })();
+
+  return recentTrackRequest;
 };
 
 function ActivityHubSection(): React.JSX.Element {
@@ -69,15 +95,9 @@ function ActivityHubSection(): React.JSX.Element {
 
     const loadTrack = async (): Promise<void> => {
       try {
-        const url = `${SPOTIFY_RECENT_ENDPOINT}${SPOTIFY_RECENT_ENDPOINT.includes('?') ? '&' : '?'}t=${Date.now()}`;
-        const response = await fetch(url, { cache: 'no-store' });
-        if (!response.ok) throw new Error('Could not fetch latest track');
-        const data = (await response.json()) as SpotifyTrack;
+        const data = await fetchRecentTrackOnce();
         if (!isMounted) return;
         setTrack(data);
-      } catch {
-        if (!isMounted) return;
-        setTrack(null);
       } finally {
         if (isMounted) setIsLoadingTrack(false);
       }
@@ -198,7 +218,7 @@ function ActivityHubSection(): React.JSX.Element {
 
         <a
           href="/resume.pdf"
-          download="TJosephKim_Resume.pdf"
+          download="Taebok_Joseph_Kim_Resume.pdf"
           className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-transform transition-colors duration-200 hover:scale-105 ${
             isDarkMode
               ? 'border-white/20 bg-white/[0.04] text-white hover:bg-white/[0.10]'
@@ -240,7 +260,7 @@ function ActivityHubSection(): React.JSX.Element {
               <div className="flex items-center gap-2">
                 <Github className="h-5 w-5" />
                 <h3 className={`text-lg sm:text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                  GitHub Contribution Graph
+                  My GitHub Contribution Graph
                 </h3>
               </div>
               <a
@@ -329,7 +349,7 @@ function ActivityHubSection(): React.JSX.Element {
 
             {!isLoadingTrack && !track && (
               <div className={`rounded-xl border p-3 text-sm ${isDarkMode ? 'border-white/10 bg-white/[0.04] text-gray-300' : 'border-black/10 bg-black/[0.03] text-gray-700'}`}>
-                Set <code>VITE_SPOTIFY_RECENT_ENDPOINT</code> to show your live recently played song.
+                ERROR SPOTIFY ENDPOINT NOT CONFIGURED OR FAILED TO LOAD TRACK
               </div>
             )}
           </motion.article>
